@@ -1,34 +1,57 @@
-import React from 'react';
+// src/components/UserList.jsx
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const UserList = ({ users, onEdit, onDelete }) => {
+function UserList() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/users');
+      setUsers(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <div className="loading">Đang tải...</div>;
+  }
+
   return (
-    <div>
-      <h2>Danh sách người dùng</h2>
-      <table border="1" style={{ width: '100%', marginTop: '20px' }}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map(user => (
-            <tr key={user.id || user._id}>
-              <td>{user.id || user._id}</td>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>
-                <button onClick={() => onEdit(user)}>Sửa</button>
-                <button onClick={() => onDelete(user.id || user._id)}>Xóa</button>
-              </td>
+    <div className="user-list">
+      <h2>📋 Danh sách Users</h2>
+      {users.length === 0 ? (
+        <p className="empty-message">Chưa có user nào. Hãy thêm user mới!</p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tên</th>
+              <th>Email</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map(user => (
+              <tr key={user.id}>
+                <td>{user.id}</td>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
-};
+}
 
 export default UserList;

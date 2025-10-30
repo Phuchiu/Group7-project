@@ -1,67 +1,80 @@
-import React, { useState, useEffect } from 'react';
+// src/components/AddUser.jsx
+import React, { useState } from 'react';
+import axios from 'axios';
 
-const AddUser = ({ onSubmit, editingUser, onCancelEdit }) => {
+function AddUser({ onUserAdded }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (editingUser) {
-      setName(editingUser.name);
-      setEmail(editingUser.email);
-    }
-  }, [editingUser]);
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!name.trim()) {
-      alert('Name không được để trống');
-      return;
-    }
-    
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      alert('Email không hợp lệ');
+
+    // Validation đơn giản
+    if (!name.trim() || !email.trim()) {
+      alert('Vui lòng điền đầy đủ thông tin');
       return;
     }
 
-    onSubmit({ name, email });
-    setName('');
-    setEmail('');
-  };
+    try {
+      setLoading(true);
+      const response = await axios.post('http://localhost:3000/users', {
+        name: name.trim(),
+        email: email.trim()
+      });
 
-  const handleCancel = () => {
-    setName('');
-    setEmail('');
-    onCancelEdit();
+      // Clear form sau khi thêm thành công
+      setName('');
+      setEmail('');
+
+      alert('Thêm user thành công!');
+
+      // Gọi callback để refresh danh sách
+      if (onUserAdded) {
+        onUserAdded(response.data);
+      }
+    } catch (error) {
+      console.error('Error adding user:', error);
+      alert('Lỗi khi thêm user');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div>
-      <h2>{editingUser ? 'Sửa người dùng' : 'Thêm người dùng'}</h2>
+    <div className="add-user">
+      <h2>➕ Thêm User Mới</h2>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={{ marginRight: '10px', padding: '5px' }}
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ marginRight: '10px', padding: '5px' }}
-        />
-        <button type="submit">{editingUser ? 'Cập nhật' : 'Thêm'}</button>
-        {editingUser && (
-          <button type="button" onClick={handleCancel} style={{ marginLeft: '10px' }}>
-            Hủy
-          </button>
-        )}
+        <div className="form-group">
+          <label htmlFor="name">Tên:</label>
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Nhập tên người dùng"
+            disabled={loading}
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Nhập email"
+            disabled={loading}
+          />
+        </div>
+
+        <button type="submit" disabled={loading}>
+          {loading ? '⏳ Đang thêm...' : '✅ Thêm User'}
+        </button>
       </form>
     </div>
   );
-};
+}
 
 export default AddUser;
