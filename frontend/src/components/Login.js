@@ -5,9 +5,11 @@ const Login = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post('http://localhost:3000/api/auth/login', {
         email,
@@ -16,37 +18,45 @@ const Login = ({ onLogin }) => {
       
       localStorage.setItem('token', response.data.token);
       setMessage('Đăng nhập thành công!');
-      onLogin(response.data.user);
+      setTimeout(() => onLogin(response.data.user), 1000);
     } catch (error) {
       setMessage(error.response?.data?.message || 'Đăng nhập thất bại');
     }
+    setLoading(false);
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px' }}>
-      <h2>Đăng nhập</h2>
+    <div className="form-container">
       <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={{ width: '100%', padding: '10px', margin: '10px 0' }}
-        />
-        <input
-          type="password"
-          placeholder="Mật khẩu"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          style={{ width: '100%', padding: '10px', margin: '10px 0' }}
-        />
-        <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#007bff', color: 'white', border: 'none' }}>
-          Đăng nhập
+        <div className="form-group">
+          <input
+            type="email"
+            placeholder="📧 Email của bạn"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="form-input"
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="password"
+            placeholder="🔒 Mật khẩu"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="form-input"
+          />
+        </div>
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? '⏳ Đang đăng nhập...' : '🚀 Đăng nhập'}
         </button>
       </form>
-      {message && <p style={{ color: message.includes('thành công') ? 'green' : 'red' }}>{message}</p>}
+      {message && (
+        <div className={`message ${message.includes('thành công') ? 'success' : 'error'}`}>
+          {message}
+        </div>
+      )}
     </div>
   );
 };

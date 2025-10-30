@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import './styles.css';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -29,45 +30,55 @@ function App() {
 
   if (user) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <h1>Chào mừng!</h1>
-        <p>Bạn đã đăng nhập thành công</p>
-        <button onClick={handleLogout} style={{ padding: '10px 20px', backgroundColor: '#dc3545', color: 'white', border: 'none' }}>
-          Đăng xuất
+      <div className="welcome">
+        <h1>🎉 Chào mừng trở lại!</h1>
+        <p>Bạn đã đăng nhập thành công vào hệ thống</p>
+        
+        {user.name && (
+          <div className="user-info">
+            <h3>👤 Thông tin tài khoản</h3>
+            <div className="user-detail">
+              <strong>Tên:</strong>
+              <span>{user.name}</span>
+            </div>
+            <div className="user-detail">
+              <strong>Email:</strong>
+              <span>{user.email}</span>
+            </div>
+            <div className="user-detail">
+              <strong>Vai trò:</strong>
+              <span>{user.role === 'admin' ? '🔑 Quản trị viên' : '👤 Người dùng'}</span>
+            </div>
+          </div>
+        )}
+        
+        <button onClick={handleLogout} className="btn btn-danger">
+          🚀 Đăng xuất
         </button>
       </div>
     );
   }
 
   return (
-    <div>
-      <div style={{ textAlign: 'center', padding: '20px' }}>
-        <h1>User Management System</h1>
-        <div>
-          <button 
-            onClick={() => setView('login')}
-            style={{ 
-              padding: '10px 20px', 
-              margin: '0 10px',
-              backgroundColor: view === 'login' ? '#007bff' : '#6c757d',
-              color: 'white',
-              border: 'none'
-            }}
-          >
-            Đăng nhập
-          </button>
-          <button 
-            onClick={() => setView('signup')}
-            style={{ 
-              padding: '10px 20px',
-              backgroundColor: view === 'signup' ? '#28a745' : '#6c757d',
-              color: 'white',
-              border: 'none'
-            }}
-          >
-            Đăng ký
-          </button>
-        </div>
+    <div className="container">
+      <div className="header">
+        <h1>💼 User Management</h1>
+        <p>Hệ thống quản lý người dùng hiện đại</p>
+      </div>
+      
+      <div className="tabs">
+        <button 
+          onClick={() => setView('login')}
+          className={`tab ${view === 'login' ? 'active' : ''}`}
+        >
+          🔑 Đăng nhập
+        </button>
+        <button 
+          onClick={() => setView('signup')}
+          className={`tab ${view === 'signup' ? 'active' : ''}`}
+        >
+          ✨ Đăng ký
+        </button>
       </div>
       
       {view === 'login' ? (

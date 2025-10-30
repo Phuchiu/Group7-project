@@ -6,9 +6,11 @@ const Signup = ({ onSignup }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post('http://localhost:3000/api/auth/signup', {
         name,
@@ -18,46 +20,56 @@ const Signup = ({ onSignup }) => {
       
       localStorage.setItem('token', response.data.token);
       setMessage('Đăng ký thành công!');
-      onSignup(response.data.user);
+      setTimeout(() => onSignup(response.data.user), 1000);
     } catch (error) {
       setMessage(error.response?.data?.message || 'Đăng ký thất bại');
     }
+    setLoading(false);
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px' }}>
-      <h2>Đăng ký</h2>
+    <div className="form-container">
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Họ tên"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          style={{ width: '100%', padding: '10px', margin: '10px 0' }}
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={{ width: '100%', padding: '10px', margin: '10px 0' }}
-        />
-        <input
-          type="password"
-          placeholder="Mật khẩu (tối thiểu 6 ký tự)"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          minLength="6"
-          style={{ width: '100%', padding: '10px', margin: '10px 0' }}
-        />
-        <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#28a745', color: 'white', border: 'none' }}>
-          Đăng ký
+        <div className="form-group">
+          <input
+            type="text"
+            placeholder="👤 Họ và tên"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            className="form-input"
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="email"
+            placeholder="📧 Địa chỉ email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="form-input"
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="password"
+            placeholder="🔒 Mật khẩu (tối thiểu 6 ký tự)"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength="6"
+            className="form-input"
+          />
+        </div>
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? '⏳ Đang tạo tài khoản...' : '✨ Tạo tài khoản'}
         </button>
       </form>
-      {message && <p style={{ color: message.includes('thành công') ? 'green' : 'red' }}>{message}</p>}
+      {message && (
+        <div className={`message ${message.includes('thành công') ? 'success' : 'error'}`}>
+          {message}
+        </div>
+      )}
     </div>
   );
 };
