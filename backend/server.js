@@ -7,7 +7,15 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use('/', userRoutes);
+
+// Routes
+const authRoutes = require('./routes/auth');
+const adminRoutes = require('./routes/admin');
+const uploadRoutes = require('./routes/upload');
+app.use('/api/auth', authRoutes);
+app.use('/api', userRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Kết nối MongoDB
 mongoose.connect(process.env.MONGODB_URI)
