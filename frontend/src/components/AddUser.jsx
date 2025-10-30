@@ -18,7 +18,7 @@ function AddUser({ onUserAdded }) {
 
     try {
       setLoading(true);
-      const response = await axios.post('http://localhost:3000/users', {
+      const response = await axios.post('${process.env.REACT_APP_API_URL}/users', {
         name: name.trim(),
         email: email.trim()
       });
