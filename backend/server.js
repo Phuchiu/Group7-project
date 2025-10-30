@@ -3,11 +3,15 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const userRoutes = require('./routes/user');
+const authRoutes = require('./routes/auth');
+const profileRoutes = require('./routes/profile');
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use('/', userRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api', profileRoutes);
+app.use('/api', userRoutes);
 
 // Kết nối MongoDB
 mongoose.connect(process.env.MONGODB_URI)
