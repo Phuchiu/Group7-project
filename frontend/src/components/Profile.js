@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../services/api';
+import RefreshTokenTest from './RefreshTokenTest';
+import AvatarUpload from './AvatarUpload';
+import AvatarDisplay from './AvatarDisplay';
 
 const Profile = ({ user, setUser }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -7,8 +10,7 @@ const Profile = ({ user, setUser }) => {
     name: user.name,
     email: user.email
   });
-  const [avatarFile, setAvatarFile] = useState(null);
-  const [avatarPreview, setAvatarPreview] = useState(user.avatar || '');
+  const [currentAvatar, setCurrentAvatar] = useState(user.avatar || '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -20,16 +22,11 @@ const Profile = ({ user, setUser }) => {
     });
   };
 
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setAvatarFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleAvatarUpdate = (newAvatarUrl) => {
+    setCurrentAvatar(newAvatarUrl);
+    const updatedUser = { ...user, avatar: newAvatarUrl };
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
   const handleSubmit = async (e) => {
@@ -39,23 +36,11 @@ const Profile = ({ user, setUser }) => {
     setSuccess('');
 
     try {
-      const token = localStorage.getItem('token');
-      const formDataToSend = new FormData();
-      formDataToSend.append('name', formData.name);
-      formDataToSend.append('email', formData.email);
-      if (avatarFile) {
-        formDataToSend.append('avatar', avatarFile);
-      }
-
-      const response = await axios.put('http://localhost:3000/api/profile', formDataToSend, {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const response = await api.put('/api/profile', formData);
       
-      setUser(response.data.user);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      const updatedUser = { ...response.data.user, avatar: currentAvatar };
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
       setSuccess('Cập nhật profile thành công!');
       setIsEditing(false);
     } catch (error) {
@@ -70,8 +55,7 @@ const Profile = ({ user, setUser }) => {
       name: user.name,
       email: user.email
     });
-    setAvatarFile(null);
-    setAvatarPreview(user.avatar || '');
+    setCurrentAvatar(user.avatar || '');
     setIsEditing(false);
     setError('');
     setSuccess('');
@@ -87,14 +71,12 @@ const Profile = ({ user, setUser }) => {
       <div className="profile-card">
         {!isEditing ? (
           <div className="profile-view">
-            <div className="profile-avatar">
-              {user.avatar ? (
-                <img src={user.avatar} alt="Avatar" className="avatar-img" />
-              ) : (
-                <div className="avatar-placeholder">
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
-              )}
+            <div className="profile-avatar-section">
+              <AvatarDisplay 
+                avatar={currentAvatar} 
+                name={user.name} 
+                size="large" 
+              />
             </div>
             <div className="profile-field">
               <label>Họ tên:</label>
@@ -114,20 +96,10 @@ const Profile = ({ user, setUser }) => {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="profile-edit">
-            <div className="form-group">
-              <label>Avatar:</label>
-              <div className="avatar-upload">
-                {avatarPreview && (
-                  <img src={avatarPreview} alt="Preview" className="avatar-preview" />
-                )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleAvatarChange}
-                  className="avatar-input"
-                />
-              </div>
-            </div>
+            <AvatarUpload 
+              currentAvatar={currentAvatar}
+              onAvatarUpdate={handleAvatarUpdate}
+            />
             <div className="form-group">
               <label>Họ tên:</label>
               <input
@@ -159,6 +131,8 @@ const Profile = ({ user, setUser }) => {
           </form>
         )}
       </div>
+      
+      {process.env.NODE_ENV === 'development' && <RefreshTokenTest />}
     </div>
   );
 };

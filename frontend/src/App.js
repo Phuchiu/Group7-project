@@ -1,39 +1,62 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 import Profile from './components/Profile';
 import AdminPanel from './components/AdminPanel';
 import UserList from './components/UserList';
+import TokenStatus from './components/TokenStatus';
+import RoleBasedNav from './components/RoleBasedNav';
+import RoleManagement from './components/RoleManagement';
+import ModeratorPanel from './components/ModeratorPanel';
+import PermissionDisplay from './components/PermissionDisplay';
+import { RoleProvider } from './contexts/RoleContext';
+import { TokenManager } from './services/api';
 import './styles.css';
 
 function App() {
   const [user, setUser] = useState(null);
   const [currentView, setCurrentView] = useState('login');
+  const [authView, setAuthView] = useState('login');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const accessToken = TokenManager.getAccessToken();
+    const refreshToken = TokenManager.getRefreshToken();
     const userData = localStorage.getItem('user');
     
-    if (token && userData) {
+    if (accessToken && refreshToken && userData) {
       setUser(JSON.parse(userData));
       setCurrentView('userlist');
     }
     setLoading(false);
   }, []);
 
-  const handleLogin = (userData, token) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
+  const handleLogin = (userData, accessToken) => {
     setUser(userData);
     setCurrentView('userlist');
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
-    setCurrentView('login');
+  const handleLogout = async () => {
+    try {
+      // Call logout API to revoke refresh token
+      const refreshToken = TokenManager.getRefreshToken();
+      if (refreshToken) {
+        await fetch('http://localhost:3000/api/auth/logout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refreshToken })
+        });
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      TokenManager.clearTokens();
+      setUser(null);
+      setCurrentView('login');
+    }
   };
 
   if (loading) {
@@ -42,44 +65,66 @@ function App() {
 
   if (!user) {
     return (
-      <div className="app">
-        <div className="auth-container">
-          {currentView === 'login' ? (
-            <Login 
-              onLogin={handleLogin}
-              onSwitchToSignup={() => setCurrentView('signup')}
-            />
-          ) : (
-            <Signup 
-              onSignup={handleLogin}
-              onSwitchToLogin={() => setCurrentView('login')}
-            />
-          )}
+      <Router>
+        <div className="app">
+          <Routes>
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
+            <Route path="*" element={
+              <div className="auth-container">
+                {authView === 'login' && (
+                  <Login 
+                    onLogin={handleLogin}
+                    onSwitchToSignup={() => setAuthView('signup')}
+                    onForgotPassword={() => setAuthView('forgot')}
+                  />
+                )}
+                {authView === 'signup' && (
+                  <Signup 
+                    onSignup={handleLogin}
+                    onSwitchToLogin={() => setAuthView('login')}
+                  />
+                )}
+                {authView === 'forgot' && (
+                  <ForgotPassword 
+                    onBack={() => setAuthView('login')}
+                  />
+                )}
+              </div>
+            } />
+          </Routes>
         </div>
-      </div>
+      </Router>
     );
   }
 
   return (
-    <div className="app">
-      <nav className="navbar">
-        <h1>User Management System</h1>
-        <div className="nav-links">
-          <button onClick={() => setCurrentView('userlist')}>Users</button>
-          <button onClick={() => setCurrentView('profile')}>Profile</button>
-          {user.role === 'admin' && (
-            <button onClick={() => setCurrentView('admin')}>Admin Panel</button>
-          )}
-          <button onClick={handleLogout} className="logout-btn">Logout</button>
-        </div>
-      </nav>
+    <RoleProvider>
+      <div className="app">
+        {user && <TokenStatus />}
+        <nav className="navbar">
+          <h1>User Management System</h1>
+          <RoleBasedNav 
+            currentView={currentView}
+            setCurrentView={setCurrentView}
+            onLogout={handleLogout}
+            user={user}
+          />
+        </nav>
 
-      <main className="main-content">
-        {currentView === 'userlist' && <UserList />}
-        {currentView === 'profile' && <Profile user={user} setUser={setUser} />}
-        {currentView === 'admin' && user.role === 'admin' && <AdminPanel />}
-      </main>
-    </div>
+        <main className="main-content">
+          {currentView === 'userlist' && <UserList />}
+          {currentView === 'profile' && (
+            <>
+              <Profile user={user} setUser={setUser} />
+              <PermissionDisplay />
+            </>
+          )}
+          {currentView === 'admin' && <AdminPanel />}
+          {currentView === 'roles' && <RoleManagement />}
+          {currentView === 'moderate' && <ModeratorPanel />}
+        </main>
+      </div>
+    </RoleProvider>
   );
 }
 

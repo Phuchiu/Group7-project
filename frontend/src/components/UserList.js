@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api';
+import AvatarDisplay from './AvatarDisplay';
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -14,7 +15,7 @@ const UserList = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/users');
+      const response = await api.get('/api/users');
       setUsers(response.data.users);
     } catch (error) {
       setError('Không thể tải danh sách người dùng');
@@ -26,7 +27,7 @@ const UserList = () => {
   const handleAddUser = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3000/api/users', newUser);
+      await api.post('/api/users', newUser);
       setNewUser({ name: '', email: '' });
       fetchUsers();
     } catch (error) {
@@ -37,7 +38,7 @@ const UserList = () => {
   const handleUpdateUser = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:3000/api/users/${editingUser._id}`, {
+      await api.put(`/api/users/${editingUser._id}`, {
         name: editingUser.name,
         email: editingUser.email
       });
@@ -51,10 +52,7 @@ const UserList = () => {
   const handleDeleteUser = async (userId) => {
     if (window.confirm('Bạn có chắc muốn xóa người dùng này?')) {
       try {
-        const token = localStorage.getItem('token');
-        await axios.delete(`http://localhost:3000/api/users/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await api.delete(`/api/users/${userId}`);
         fetchUsers();
       } catch (error) {
         setError(error.response?.data?.message || 'Không thể xóa người dùng');
@@ -97,6 +95,7 @@ const UserList = () => {
         <table>
           <thead>
             <tr>
+              <th>Avatar</th>
               <th>Tên</th>
               <th>Email</th>
               <th>Vai trò</th>
@@ -107,6 +106,13 @@ const UserList = () => {
           <tbody>
             {users.map(user => (
               <tr key={user._id}>
+                <td>
+                  <AvatarDisplay 
+                    avatar={user.avatar} 
+                    name={user.name} 
+                    size="small" 
+                  />
+                </td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.role}</td>

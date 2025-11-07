@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { api, TokenManager } from '../services/api';
 
 const Signup = ({ onSignup, onSwitchToLogin }) => {
   const [formData, setFormData] = useState({
@@ -23,8 +23,14 @@ const Signup = ({ onSignup, onSwitchToLogin }) => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/signup', formData);
-      onSignup(response.data.user, response.data.token);
+      const response = await api.post('/api/auth/signup', formData);
+      const { user, accessToken, refreshToken } = response.data;
+      
+      // Store tokens
+      TokenManager.setTokens(accessToken, refreshToken);
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      onSignup(user, accessToken);
     } catch (error) {
       setError(error.response?.data?.message || 'Đăng ký thất bại');
     } finally {

@@ -1,0 +1,164 @@
+{
+  "info": {
+    "name": "RBAC Tests - Group 7",
+    "description": "Test collection for Role-Based Access Control (User, Moderator, Admin)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/login"
+          }
+        },
+        {
+          "name": "Login Moderator", 
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"moderator@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/login"
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST", 
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. RBAC Permissions",
+      "item": [
+        {
+          "name": "Get User Permissions",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": "http://localhost:3000/api/rbac/permissions"
+          }
+        },
+        {
+          "name": "Get Role Stats (Admin Only)",
+          "request": {
+            "method": "GET", 
+            "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"}],
+            "url": "http://localhost:3000/api/rbac/stats"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Role-Based Endpoints",
+      "item": [
+        {
+          "name": "Admin Only Endpoint",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"}],
+            "url": "http://localhost:3000/api/rbac/admin-only"
+          }
+        },
+        {
+          "name": "Moderator + Admin Endpoint",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{moderatorToken}}"}], 
+            "url": "http://localhost:3000/api/rbac/moderator-admin"
+          }
+        },
+        {
+          "name": "All Roles Endpoint",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{userToken}}"}],
+            "url": "http://localhost:3000/api/rbac/all-roles"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. User Management",
+      "item": [
+        {
+          "name": "Get Users (Admin/Moderator)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"}],
+            "url": "http://localhost:3000/api/users"
+          }
+        },
+        {
+          "name": "Update User Role (Admin Only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{adminToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw", 
+              "raw": "{\n  \"role\": \"moderator\"\n}"
+            },
+            "url": "http://localhost:3000/api/rbac/users/USER_ID/role"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Access Control Tests",
+      "item": [
+        {
+          "name": "User tries Admin Endpoint (Should Fail)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{userToken}}"}],
+            "url": "http://localhost:3000/api/rbac/admin-only"
+          }
+        },
+        {
+          "name": "User tries Get Users (Should Fail)",
+          "request": {
+            "method": "GET", 
+            "header": [{"key": "Authorization", "value": "Bearer {{userToken}}"}],
+            "url": "http://localhost:3000/api/users"
+          }
+        },
+        {
+          "name": "Moderator tries Role Update (Should Fail)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{moderatorToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"admin\"\n}"
+            },
+            "url": "http://localhost:3000/api/rbac/users/USER_ID/role"
+          }
+        }
+      ]
+    }
+  ]
+}
