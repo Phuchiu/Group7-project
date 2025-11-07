@@ -89,6 +89,7 @@ function App() {
             currentView={currentView}
             setCurrentView={setCurrentView}
             onLogout={handleLogout}
+            user={user}
           />
         </nav>
 

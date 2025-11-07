@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
+import AvatarDisplay from './AvatarDisplay';
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -94,6 +95,7 @@ const UserList = () => {
         <table>
           <thead>
             <tr>
+              <th>Avatar</th>
               <th>Tên</th>
               <th>Email</th>
               <th>Vai trò</th>
@@ -104,6 +106,13 @@ const UserList = () => {
           <tbody>
             {users.map(user => (
               <tr key={user._id}>
+                <td>
+                  <AvatarDisplay 
+                    avatar={user.avatar} 
+                    name={user.name} 
+                    size="small" 
+                  />
+                </td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.role}</td>

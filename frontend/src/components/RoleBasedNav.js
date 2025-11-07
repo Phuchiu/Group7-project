@@ -1,11 +1,20 @@
 import React from 'react';
 import { useRole } from '../contexts/RoleContext';
+import AvatarDisplay from './AvatarDisplay';
 
-const RoleBasedNav = ({ currentView, setCurrentView, onLogout }) => {
+const RoleBasedNav = ({ currentView, setCurrentView, onLogout, user }) => {
   const { hasRole, hasAnyRole } = useRole();
 
   return (
     <div className="nav-links">
+      <div className="nav-user-info">
+        <AvatarDisplay 
+          avatar={user?.avatar} 
+          name={user?.name} 
+          size="small" 
+        />
+        <span className="nav-username">{user?.name}</span>
+      </div>
       {/* All users can see Users list */}
       <button 
         onClick={() => setCurrentView('userlist')}
