@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 import Profile from './components/Profile';
 import AdminPanel from './components/AdminPanel';
 import UserList from './components/UserList';
@@ -16,6 +19,7 @@ import './styles.css';
 function App() {
   const [user, setUser] = useState(null);
   const [currentView, setCurrentView] = useState('login');
+  const [authView, setAuthView] = useState('login');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -61,21 +65,35 @@ function App() {
 
   if (!user) {
     return (
-      <div className="app">
-        <div className="auth-container">
-          {currentView === 'login' ? (
-            <Login 
-              onLogin={handleLogin}
-              onSwitchToSignup={() => setCurrentView('signup')}
-            />
-          ) : (
-            <Signup 
-              onSignup={handleLogin}
-              onSwitchToLogin={() => setCurrentView('login')}
-            />
-          )}
+      <Router>
+        <div className="app">
+          <Routes>
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
+            <Route path="*" element={
+              <div className="auth-container">
+                {authView === 'login' && (
+                  <Login 
+                    onLogin={handleLogin}
+                    onSwitchToSignup={() => setAuthView('signup')}
+                    onForgotPassword={() => setAuthView('forgot')}
+                  />
+                )}
+                {authView === 'signup' && (
+                  <Signup 
+                    onSignup={handleLogin}
+                    onSwitchToLogin={() => setAuthView('login')}
+                  />
+                )}
+                {authView === 'forgot' && (
+                  <ForgotPassword 
+                    onBack={() => setAuthView('login')}
+                  />
+                )}
+              </div>
+            } />
+          </Routes>
         </div>
-      </div>
+      </Router>
     );
   }
 

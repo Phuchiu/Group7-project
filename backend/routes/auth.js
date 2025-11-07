@@ -1,5 +1,5 @@
 const express = require('express');
-const { signup, login, refreshAccessToken, logout, revokeAllTokens } = require('../controllers/authController');
+const { signup, login, refreshAccessToken, logout, revokeAllTokens, forgotPassword, resetPassword } = require('../controllers/authController');
 const { auth } = require('../middleware/auth');
 
 const router = express.Router();
@@ -9,5 +9,7 @@ router.post('/login', login);
 router.post('/refresh', refreshAccessToken);
 router.post('/logout', logout);
 router.post('/revoke-all', auth, revokeAllTokens);
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password/:token', resetPassword);
 
 module.exports = router;

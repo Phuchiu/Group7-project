@@ -474,6 +474,26 @@ th {
   margin-bottom: 1rem;
 }
 
+/* Forgot Password & Reset Password */
+.forgot-password-link {
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.forgot-password-link .link-btn {
+  color: #667eea;
+  font-size: 0.9rem;
+}
+
+.reset-password-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
 /* Token Status */
 .token-status {
   position: fixed;

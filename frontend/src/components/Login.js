@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { api, TokenManager } from '../services/api';
 
-const Login = ({ onLogin, onSwitchToSignup }) => {
+const Login = ({ onLogin, onSwitchToSignup, onForgotPassword }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -69,6 +69,12 @@ const Login = ({ onLogin, onSwitchToSignup }) => {
           {loading ? 'Đang đăng nhập...' : 'Đăng Nhập'}
         </button>
       </form>
+      
+      <p>
+        <button type="button" onClick={onForgotPassword} className="link-btn">
+          Quên mật khẩu?
+        </button>
+      </p>
       
       <p>
         Chưa có tài khoản? 
