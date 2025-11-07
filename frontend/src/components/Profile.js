@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../services/api';
+import RefreshTokenTest from './RefreshTokenTest';
 
 const Profile = ({ user, setUser }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -39,7 +40,6 @@ const Profile = ({ user, setUser }) => {
     setSuccess('');
 
     try {
-      const token = localStorage.getItem('token');
       const formDataToSend = new FormData();
       formDataToSend.append('name', formData.name);
       formDataToSend.append('email', formData.email);
@@ -47,9 +47,8 @@ const Profile = ({ user, setUser }) => {
         formDataToSend.append('avatar', avatarFile);
       }
 
-      const response = await axios.put('http://localhost:3000/api/profile', formDataToSend, {
+      const response = await api.put('/api/profile', formDataToSend, {
         headers: { 
-          Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         }
       });
@@ -159,6 +158,8 @@ const Profile = ({ user, setUser }) => {
           </form>
         )}
       </div>
+      
+      {process.env.NODE_ENV === 'development' && <RefreshTokenTest />}
     </div>
   );
 };

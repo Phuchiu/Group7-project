@@ -44,4 +44,36 @@ const adminAuth = (req, res, next) => {
   next();
 };
 
-module.exports = { auth, adminAuth };
+// Advanced RBAC - Check specific role
+const checkRole = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ 
+        message: `Chỉ ${roles.join(', ')} mới có quyền truy cập`,
+        requiredRoles: roles,
+        userRole: req.user.role
+      });
+    }
+    next();
+  };
+};
+
+// Check if user has admin or moderator role
+const moderatorAuth = (req, res, next) => {
+  if (!['admin', 'moderator'].includes(req.user.role)) {
+    return res.status(403).json({ message: 'Chỉ admin hoặc moderator mới có quyền truy cập' });
+  }
+  next();
+};
+
+// Check if user is admin or owns the resource
+const adminOrOwner = (req, res, next) => {
+  const userId = req.params.id || req.params.userId;
+  if (req.user.role === 'admin' || req.user._id.toString() === userId) {
+    next();
+  } else {
+    return res.status(403).json({ message: 'Chỉ admin hoặc chủ sở hữu mới có quyền truy cập' });
+  }
+};
+
+module.exports = { auth, adminAuth, checkRole, moderatorAuth, adminOrOwner };

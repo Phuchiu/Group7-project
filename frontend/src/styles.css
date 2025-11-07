@@ -474,6 +474,130 @@ th {
   margin-bottom: 1rem;
 }
 
+/* Token Status */
+.token-status {
+  position: fixed;
+  top: 80px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  z-index: 1000;
+  min-width: 220px;
+  max-width: 250px;
+}
+
+.token-status h3 {
+  margin: 0 0 0.4rem 0;
+  font-size: 0.8rem;
+}
+
+.token-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.token-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.token-item.active {
+  color: #4ade80;
+}
+
+.token-item.inactive {
+  color: #f87171;
+}
+
+.expired {
+  color: #fbbf24 !important;
+  font-weight: bold;
+}
+
+.token-expiry {
+  font-size: 0.7rem;
+  color: #d1d5db;
+  margin-top: 0.5rem;
+}
+
+/* Refresh Token Test */
+.refresh-test {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.test-controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.test-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.test-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.clear-btn {
+  background: #6b7280;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.test-results {
+  background: #1f2937;
+  border-radius: 8px;
+  padding: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+}
+
+.test-result {
+  display: flex;
+  margin-bottom: 0.5rem;
+  align-items: flex-start;
+}
+
+.test-result.success {
+  color: #10b981;
+}
+
+.test-result.error {
+  color: #ef4444;
+}
+
+.timestamp {
+  color: #6b7280;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+.message {
+  flex: 1;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .navbar {
@@ -496,5 +620,12 @@ th {
   
   .stats-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .token-status {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-bottom: 1rem;
   }
 }

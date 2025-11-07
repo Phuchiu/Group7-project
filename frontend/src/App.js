@@ -4,6 +4,8 @@ import Signup from './components/Signup';
 import Profile from './components/Profile';
 import AdminPanel from './components/AdminPanel';
 import UserList from './components/UserList';
+import TokenStatus from './components/TokenStatus';
+import { TokenManager } from './services/api';
 import './styles.css';
 
 function App() {
@@ -12,28 +14,40 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const accessToken = TokenManager.getAccessToken();
+    const refreshToken = TokenManager.getRefreshToken();
     const userData = localStorage.getItem('user');
     
-    if (token && userData) {
+    if (accessToken && refreshToken && userData) {
       setUser(JSON.parse(userData));
       setCurrentView('userlist');
     }
     setLoading(false);
   }, []);
 
-  const handleLogin = (userData, token) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
+  const handleLogin = (userData, accessToken) => {
     setUser(userData);
     setCurrentView('userlist');
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
-    setCurrentView('login');
+  const handleLogout = async () => {
+    try {
+      // Call logout API to revoke refresh token
+      const refreshToken = TokenManager.getRefreshToken();
+      if (refreshToken) {
+        await fetch('http://localhost:3000/api/auth/logout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refreshToken })
+        });
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      TokenManager.clearTokens();
+      setUser(null);
+      setCurrentView('login');
+    }
   };
 
   if (loading) {
@@ -62,6 +76,7 @@ function App() {
 
   return (
     <div className="app">
+      {user && <TokenStatus />}
       <nav className="navbar">
         <h1>User Management System</h1>
         <div className="nav-links">

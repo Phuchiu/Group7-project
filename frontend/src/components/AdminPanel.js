@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 
 const AdminPanel = () => {
   const [stats, setStats] = useState(null);
@@ -13,12 +13,9 @@ const AdminPanel = () => {
 
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const headers = { Authorization: `Bearer ${token}` };
-
       const [statsResponse, usersResponse] = await Promise.all([
-        axios.get('http://localhost:3000/api/users/stats', { headers }),
-        axios.get('http://localhost:3000/api/users', { headers })
+        api.get('/api/users/stats'),
+        api.get('/api/users')
       ]);
 
       setStats(statsResponse.data);
@@ -34,10 +31,7 @@ const AdminPanel = () => {
   const handleDeleteUser = async (userId, userName) => {
     if (window.confirm(`Bạn có chắc muốn xóa người dùng ${userName}?`)) {
       try {
-        const token = localStorage.getItem('token');
-        await axios.delete(`http://localhost:3000/api/users/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await api.delete(`/api/users/${userId}`);
         fetchData(); // Refresh data
       } catch (error) {
         setError(error.response?.data?.message || 'Không thể xóa người dùng');
