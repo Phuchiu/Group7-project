@@ -29,10 +29,10 @@ function Usersdashboard() {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}/users`, {
+      const response = await axios.get(`${API_URL}/admin/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setUsers(response.data);
+      setUsers(response.data.users || response.data);
       setLoading(false);
     } catch (error) {
       console.error('Fetch users error:', error);
@@ -47,7 +47,7 @@ function Usersdashboard() {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`${API_URL}/users/${id}`, {
+      await axios.delete(`${API_URL}/admin/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers(users.filter(u => u._id !== id));
@@ -62,7 +62,7 @@ function Usersdashboard() {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `${API_URL}/users/${userId}`,
+        `${API_URL}/admin/users/${userId}/role`,
         { role: newRole },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -125,13 +125,13 @@ function Usersdashboard() {
                 <td>
                   {user.avatar ? (
                     <img 
-                      src={`${API_URL}${user.avatar}`} 
+                      src={user.avatar.startsWith('http') ? user.avatar : `http://192.168.56.1:3000${user.avatar}`}
                       alt="Avatar" 
-                      className="table-avatar"
+                      style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }}
                     />
                   ) : (
-                    <div className="table-avatar-placeholder">
-                      {user.name.charAt(0).toUpperCase()}
+                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#667eea', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px' }}>
+                      {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                     </div>
                   )}
                 </td>

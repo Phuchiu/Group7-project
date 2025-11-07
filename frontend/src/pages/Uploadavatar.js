@@ -53,8 +53,8 @@ function Uploadavatar() {
       const formData = new FormData();
       formData.append('avatar', selectedFile);
 
-      const response = await axios.post(
-        `${API_URL}/auth/upload-avatar`,
+      const response = await axios.put(
+        `${API_URL}/profile`,
         formData,
         {
           headers: {
@@ -66,7 +66,7 @@ function Uploadavatar() {
 
       // Update user in localStorage
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      user.avatar = response.data.avatar;
+      user.avatar = response.data.user?.avatar || response.data.avatar;
       localStorage.setItem('user', JSON.stringify(user));
 
       alert('Cập nhật ảnh đại diện thành công!');
