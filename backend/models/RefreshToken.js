@@ -13,7 +13,8 @@ const refreshTokenSchema = new mongoose.Schema({
   },
   expiresAt: {
     type: Date,
-    required: true
+    required: true,
+    default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
   },
   isRevoked: {
     type: Boolean,
@@ -25,5 +26,10 @@ const refreshTokenSchema = new mongoose.Schema({
 
 // Index for automatic cleanup of expired tokens
 refreshTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+
+// Static method to cleanup revoked tokens
+refreshTokenSchema.statics.cleanupRevoked = function() {
+  return this.deleteMany({ isRevoked: true });
+};
 
 module.exports = mongoose.model('RefreshToken', refreshTokenSchema);
