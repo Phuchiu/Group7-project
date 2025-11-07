@@ -5,6 +5,11 @@ import Profile from './components/Profile';
 import AdminPanel from './components/AdminPanel';
 import UserList from './components/UserList';
 import TokenStatus from './components/TokenStatus';
+import RoleBasedNav from './components/RoleBasedNav';
+import RoleManagement from './components/RoleManagement';
+import ModeratorPanel from './components/ModeratorPanel';
+import PermissionDisplay from './components/PermissionDisplay';
+import { RoleProvider } from './contexts/RoleContext';
 import { TokenManager } from './services/api';
 import './styles.css';
 
@@ -75,26 +80,32 @@ function App() {
   }
 
   return (
-    <div className="app">
-      {user && <TokenStatus />}
-      <nav className="navbar">
-        <h1>User Management System</h1>
-        <div className="nav-links">
-          <button onClick={() => setCurrentView('userlist')}>Users</button>
-          <button onClick={() => setCurrentView('profile')}>Profile</button>
-          {user.role === 'admin' && (
-            <button onClick={() => setCurrentView('admin')}>Admin Panel</button>
-          )}
-          <button onClick={handleLogout} className="logout-btn">Logout</button>
-        </div>
-      </nav>
+    <RoleProvider>
+      <div className="app">
+        {user && <TokenStatus />}
+        <nav className="navbar">
+          <h1>User Management System</h1>
+          <RoleBasedNav 
+            currentView={currentView}
+            setCurrentView={setCurrentView}
+            onLogout={handleLogout}
+          />
+        </nav>
 
-      <main className="main-content">
-        {currentView === 'userlist' && <UserList />}
-        {currentView === 'profile' && <Profile user={user} setUser={setUser} />}
-        {currentView === 'admin' && user.role === 'admin' && <AdminPanel />}
-      </main>
-    </div>
+        <main className="main-content">
+          {currentView === 'userlist' && <UserList />}
+          {currentView === 'profile' && (
+            <>
+              <Profile user={user} setUser={setUser} />
+              <PermissionDisplay />
+            </>
+          )}
+          {currentView === 'admin' && <AdminPanel />}
+          {currentView === 'roles' && <RoleManagement />}
+          {currentView === 'moderate' && <ModeratorPanel />}
+        </main>
+      </div>
+    </RoleProvider>
   );
 }
 
