@@ -534,21 +534,26 @@ Authorization: Bearer your-access-token
 
 ## 🚀 Production Deployment
 
-### Backend (Railway/Heroku)
-```bash
-# Build và deploy
-npm run build
-git push heroku main
+### Backend (Render)
+**Live URL:** https://group7-project-g0ww.onrender.com
 
-# Environment variables
-MONGODB_URI=production-uri
-JWT_SECRET=production-secret
-EMAIL_USER=production-email
-SESSION_SECRET=production-session-secret
+```bash
+# Environment variables cần thiết:
+MONGODB_URI=mongodb+srv://admin:1234567890@cluster0.fmvyp3m.mongodb.net/groupDB
+JWT_SECRET=your-super-secret-jwt-key-here-2024
+JWT_REFRESH_SECRET=your-super-secret-refresh-jwt-key-2024
+EMAIL_USER=tai31072004ok@gmail.com
+EMAIL_PASS=ddvb atff swwf homk
+SESSION_SECRET=your-session-secret-key
+PORT=3000
+NODE_ENV=production
 ```
 
 ### Frontend (Vercel/Netlify)
 ```bash
+# Environment variables:
+REACT_APP_API_URL=https://group7-project-g0ww.onrender.com
+
 # Build production
 npm run build
 
@@ -556,6 +561,20 @@ npm run build
 vercel --prod
 # hoặc
 netlify deploy --prod
+```
+
+### 🔧 Cấu hình Environment Variables
+
+#### Frontend (.env)
+```env
+# Production API URL
+REACT_APP_API_URL=https://group7-project-g0ww.onrender.com
+```
+
+#### Frontend (.env.local) - Development only
+```env
+# Local development
+REACT_APP_API_URL=http://localhost:3000
 ```
 
 ## 📊 Performance Metrics

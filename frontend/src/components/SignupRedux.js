@@ -35,7 +35,8 @@ const SignupRedux = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/signup', formData);
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+      const response = await axios.post(`${API_URL}/api/auth/signup`, formData);
       
       // Store tokens
       sessionStorage.setItem('token', response.data.accessToken);
