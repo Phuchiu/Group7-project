@@ -15,7 +15,7 @@ const UsersRedux = () => {
     setLoading(true);
     setError('');
     try {
-      console.log('Fetching users with token:', token ? 'Token exists' : 'No token');
+      console.log('Fetching users...');
       const response = await api.get('/api/users');
       console.log('Users response:', response.data);
       setUsers(response.data.users || []);
@@ -26,7 +26,7 @@ const UsersRedux = () => {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, []);
 
   useEffect(() => {
     fetchUsers();

@@ -36,7 +36,7 @@ const DashboardRedux = () => {
     } finally {
       setLoading(false);
     }
-  }, [token, user?.role]);
+  }, [user?.role]);
 
   useEffect(() => {
     fetchDashboardData();
