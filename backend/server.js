@@ -39,35 +39,32 @@ app.use(sanitizeInput);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-// CORS configuration - allow all origins for development
-if (process.env.NODE_ENV === 'production') {
-  const corsOptions = {
-    origin: function (origin, callback) {
-      const allowedOrigins = [
-        'http://localhost:3001',
-        'http://localhost:3000',
-        process.env.FRONTEND_URL
-      ].filter(Boolean);
-      
-      if (!origin) return callback(null, true);
-      
-      if (allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    credentials: true,
-    optionsSuccessStatus: 200
-  };
-  app.use(cors(corsOptions));
-} else {
-  // Development - allow all origins
-  app.use(cors({
-    origin: true,
-    credentials: true
-  }));
-}
+// CORS configuration with production domains
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'https://group7-project-eight.vercel.app',
+      'https://group7-project-g0ww.onrender.com',
+      process.env.FRONTEND_URL
+    ].filter(Boolean);
+    
+    // Allow requests with no origin (mobile apps, etc.)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 
 // Static files with CORS headers - BEFORE other middleware
 app.use('/uploads', (req, res, next) => {
