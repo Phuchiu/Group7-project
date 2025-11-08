@@ -1,16 +1,34 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { updateAvatar } from '../store/authSlice';
 import api from '../services/api';
 
 const AvatarUpload = ({ currentAvatar, onAvatarUpdate }) => {
+  const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(currentAvatar);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const fileInputRef = useRef(null);
 
+  // Clear messages after 5 seconds
+  useEffect(() => {
+    if (error || success) {
+      const timer = setTimeout(() => {
+        setError('');
+        setSuccess('');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error, success]);
+
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Clear previous messages immediately
+      setError('');
+      setSuccess('');
+      
       // Validate file type
       if (!file.type.startsWith('image/')) {
         setError('Chỉ cho phép upload file ảnh');
@@ -37,8 +55,6 @@ const AvatarUpload = ({ currentAvatar, onAvatarUpdate }) => {
 
   const uploadAvatar = async (file) => {
     setUploading(true);
-    setError('');
-    setSuccess('');
 
     try {
       const formData = new FormData();
@@ -50,11 +66,16 @@ const AvatarUpload = ({ currentAvatar, onAvatarUpdate }) => {
         }
       });
 
+      setError(''); // Clear any existing error
       setSuccess('Upload avatar thành công!');
+      // Use the avatar path from response, frontend will handle full URL
       setPreview(response.data.avatar);
-      onAvatarUpdate(response.data.avatar);
+      onAvatarUpdate && onAvatarUpdate(response.data.avatar);
+      // Update Redux store
+      dispatch(updateAvatar(response.data.avatar));
 
     } catch (error) {
+      setSuccess(''); // Clear any existing success
       setError(error.response?.data?.message || 'Upload thất bại');
       setPreview(currentAvatar); // Reset preview
     } finally {
@@ -65,14 +86,21 @@ const AvatarUpload = ({ currentAvatar, onAvatarUpdate }) => {
   const deleteAvatar = async () => {
     if (!window.confirm('Bạn có chắc muốn xóa avatar?')) return;
 
+    setError('');
+    setSuccess('');
+    setUploading(true);
+
     try {
-      setUploading(true);
       await api.delete('/api/avatar/delete');
       
+      setError(''); // Clear any existing error
       setSuccess('Xóa avatar thành công!');
-      setPreview('');
-      onAvatarUpdate('');
+      setPreview(null);
+      onAvatarUpdate && onAvatarUpdate(null);
+      // Update Redux store
+      dispatch(updateAvatar(null));
     } catch (error) {
+      setSuccess(''); // Clear any existing success
       setError(error.response?.data?.message || 'Xóa avatar thất bại');
     } finally {
       setUploading(false);
@@ -93,7 +121,15 @@ const AvatarUpload = ({ currentAvatar, onAvatarUpdate }) => {
       <div className="avatar-container">
         <div className="avatar-preview" onClick={triggerFileInput}>
           {preview ? (
-            <img src={preview} alt="Avatar" className="avatar-image" />
+            <img 
+              src={preview.startsWith('http') ? preview : `http://localhost:3000${preview}`} 
+              alt="Avatar" 
+              className="avatar-image"
+              onError={(e) => {
+                console.error('Avatar load error:', e.target.src);
+                setError('Không thể tải ảnh avatar');
+              }}
+            />
           ) : (
             <div className="avatar-placeholder">
               <span>📷</span>

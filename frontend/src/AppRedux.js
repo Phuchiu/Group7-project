@@ -6,6 +6,12 @@ import { verifyToken } from './store/authSlice';
 import LoginRedux from './components/LoginRedux';
 import ProfileRedux from './components/ProfileRedux';
 import AdminRedux from './components/AdminRedux';
+import DashboardRedux from './components/DashboardRedux';
+import UsersRedux from './components/UsersRedux';
+import SettingsRedux from './components/SettingsRedux';
+import NavigationRedux from './components/NavigationRedux';
+import ActivityLogs from './components/ActivityLogs';
+import RoleManagement from './components/RoleManagement';
 import ProtectedRoute from './components/ProtectedRoute';
 import './styles.css';
 
@@ -23,29 +29,23 @@ const AppContent = () => {
   return (
     <Router>
       <div className="app">
-        <nav className="navbar">
-          <h1>User Management - Redux</h1>
-          {isAuthenticated && (
-            <div className="nav-user-info">
-              <div className="avatar-display avatar-small">
-                <div className="avatar-fallback">
-                  {user?.name?.charAt(0)?.toUpperCase()}
-                </div>
-              </div>
-              <div className="nav-username">
-                {user?.name} 
-                <span className={`role-badge ${user?.role}`}>{user?.role}</span>
-              </div>
-            </div>
-          )}
-        </nav>
+        {isAuthenticated && <NavigationRedux />}
 
         <main className="main-content">
           <Routes>
             <Route 
               path="/login" 
               element={
-                isAuthenticated ? <Navigate to="/profile" /> : <LoginRedux />
+                isAuthenticated ? <Navigate to="/dashboard" /> : <LoginRedux />
+              } 
+            />
+            
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <DashboardRedux />
+                </ProtectedRoute>
               } 
             />
             
@@ -59,10 +59,46 @@ const AppContent = () => {
             />
             
             <Route 
+              path="/users" 
+              element={
+                <ProtectedRoute>
+                  <UsersRedux />
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/roles" 
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <RoleManagement />
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
               path="/admin" 
               element={
                 <ProtectedRoute requiredRole="admin">
                   <AdminRedux />
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/logs" 
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <ActivityLogs />
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/settings" 
+              element={
+                <ProtectedRoute>
+                  <SettingsRedux />
                 </ProtectedRoute>
               } 
             />
@@ -89,7 +125,7 @@ const AppContent = () => {
             
             <Route 
               path="/" 
-              element={<Navigate to={isAuthenticated ? "/profile" : "/login"} />} 
+              element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} 
             />
           </Routes>
         </main>

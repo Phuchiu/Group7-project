@@ -19,7 +19,7 @@ router.get('/debug/user', auth, (req, res) => {
 });
 
 // CRUD routes with RBAC
-router.get('/users', auth, checkRole('admin', 'moderator'), getUsers);
+router.get('/users', auth, getUsers);
 router.post('/users', auth, checkRole('admin'), createUser);
 router.put('/users/:id', auth, checkRole('admin', 'moderator'), updateUser);
 router.delete('/users/:id', auth, deleteUser);

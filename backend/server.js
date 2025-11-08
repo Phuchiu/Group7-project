@@ -12,8 +12,12 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());
 
-// Static files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Static files with better error handling
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+  setHeaders: (res, path) => {
+    res.set('Access-Control-Allow-Origin', '*');
+  }
+}));
 
 // Routes
 const userRoutes = require('./routes/user');
@@ -40,6 +44,23 @@ app.get('/', (req, res) => {
       users: '/api/users',
       profile: '/api/profile'
     }
+  });
+});
+
+// Test static files
+app.get('/test-uploads', (req, res) => {
+  const fs = require('fs');
+  const uploadsPath = path.join(__dirname, 'uploads');
+  
+  if (!fs.existsSync(uploadsPath)) {
+    return res.json({ error: 'Uploads directory does not exist' });
+  }
+  
+  const files = fs.readdirSync(uploadsPath);
+  res.json({ 
+    uploadsPath,
+    files,
+    message: 'Static files working'
   });
 });
 

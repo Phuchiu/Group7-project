@@ -93,7 +93,7 @@ const AdminRedux = () => {
         </div>
       </div>
     </div>
-  );}
+  );
 };
 
 export default AdminRedux;

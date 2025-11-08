@@ -14,9 +14,30 @@ const uploadAvatar = async (req, res) => {
     const fileName = `avatar_${userId}_${Date.now()}${fileExtension}`;
     const avatarUrl = `/uploads/${fileName}`;
 
+    // Ensure uploads directory exists
+    const uploadsDir = path.join(__dirname, '../uploads');
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+
     // Save file to uploads directory
-    const uploadPath = path.join(__dirname, '../uploads', fileName);
+    const uploadPath = path.join(uploadsDir, fileName);
     fs.writeFileSync(uploadPath, req.file.buffer);
+    console.log('Avatar saved to:', uploadPath);
+    console.log('Avatar URL:', avatarUrl);
+
+    // Delete old avatar if exists
+    const user = await User.findById(userId);
+    if (user.avatar) {
+      const oldAvatarPath = path.join(__dirname, '..', user.avatar);
+      if (fs.existsSync(oldAvatarPath)) {
+        try {
+          fs.unlinkSync(oldAvatarPath);
+        } catch (err) {
+          console.log('Could not delete old avatar:', err.message);
+        }
+      }
+    }
 
     // Update user avatar URL in database
     const updatedUser = await User.findByIdAndUpdate(
@@ -50,14 +71,18 @@ const deleteAvatar = async (req, res) => {
     if (user.avatar) {
       const filePath = path.join(__dirname, '..', user.avatar);
       if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+        try {
+          fs.unlinkSync(filePath);
+        } catch (err) {
+          console.log('Could not delete avatar file:', err.message);
+        }
       }
     }
 
     // Remove avatar URL from database
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { avatar: '' },
+      { avatar: null },
       { new: true }
     ).select('-password');
 

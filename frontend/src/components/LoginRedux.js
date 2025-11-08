@@ -33,37 +33,39 @@ const LoginRedux = () => {
   };
 
   return (
-    <div className="auth-form">
-      <h2>Đăng Nhập Redux</h2>
-      {error && <div className="error">{error}</div>}
-      
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
+    <div className="login-page">
+      <div className="auth-form">
+        <h2>Đăng Nhập Redux</h2>
+        {error && <div className="error">{error}</div>}
         
-        <div className="form-group">
-          <input
-            type="password"
-            name="password"
-            placeholder="Mật khẩu"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        
-        <button type="submit" disabled={isLoading}>
-          {isLoading ? 'Đang đăng nhập...' : 'Đăng Nhập'}
-        </button>
-      </form>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          
+          <div className="form-group">
+            <input
+              type="password"
+              name="password"
+              placeholder="Mật khẩu"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          
+          <button type="submit" disabled={isLoading}>
+            {isLoading ? 'Đang đăng nhập...' : 'Đăng Nhập'}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

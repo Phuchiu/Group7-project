@@ -19,7 +19,7 @@ const AvatarDisplay = ({ avatar, name, size = 'medium', className = '' }) => {
   const getAvatarUrl = (avatar) => {
     if (!avatar) return null;
     if (avatar.startsWith('http')) return avatar;
-    return `http://localhost:3001${avatar}`;
+    return `http://localhost:3000${avatar}`;
   };
 
   return (
