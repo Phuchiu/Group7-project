@@ -43,45 +43,57 @@ const AdminRedux = () => {
 
   return (
     <div className="admin-container">
-      <h2>Admin Panel - Redux Protected</h2>
-      <p>Chào mừng Admin: <strong>{user?.name}</strong></p>
-      
-      {error && <div className="error">{error}</div>}
-      
-      <div className="users-list">
-        <h3>Danh sách Users ({users.length})</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Tên</th>
-              <th>Email</th>
-              <th>Vai trò</th>
-              <th>Hành động</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map(u => (
-              <tr key={u._id}>
-                <td>{u.name}</td>
-                <td>{u.email}</td>
-                <td>{u.role}</td>
-                <td>
-                  {u._id !== user.id && (
-                    <button 
-                      onClick={() => deleteUser(u._id)}
-                      className="delete-btn"
-                    >
-                      Xóa
-                    </button>
-                  )}
-                </td>
+      <div className="admin-panel">
+        <h2>Admin Panel</h2>
+        
+        <div className="stats-grid">
+          <div className="stat-card">
+            <h3>Tổng Users</h3>
+            <div className="stat-number">{users.length}</div>
+          </div>
+          <div className="stat-card">
+            <h3>Admin: {user?.name}</h3>
+            <div className="stat-number">👑</div>
+          </div>
+        </div>
+        
+        {error && <div className="error">{error}</div>}
+        
+        <div className="users-table">
+          <h3>Danh sách Users ({users.length})</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Tên</th>
+                <th>Email</th>
+                <th>Vai trò</th>
+                <th>Hành động</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {users.map(u => (
+                <tr key={u._id}>
+                  <td>{u.name}</td>
+                  <td>{u.email}</td>
+                  <td><span className={`role-badge ${u.role}`}>{u.role}</span></td>
+                  <td>
+                    {u._id !== user.id && (
+                      <button 
+                        onClick={() => deleteUser(u._id)}
+                        className="delete-btn"
+                      >
+                        Xóa
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  );
+  );}
 };
 
 export default AdminRedux;

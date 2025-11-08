@@ -15,29 +15,43 @@ const ProfileRedux = () => {
 
   return (
     <div className="profile-container">
-      <h2>Profile - Redux Protected</h2>
-      {user && (
-        <div className="user-info">
-          <p><strong>ID:</strong> {user.id}</p>
-          <p><strong>Tên:</strong> {user.name}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Vai trò:</strong> {user.role}</p>
-        </div>
-      )}
-      
-      <div className="actions">
-        <button onClick={handleLogout} className="logout-btn">
-          Đăng xuất
-        </button>
-        
-        {user?.role === 'admin' && (
-          <button onClick={() => navigate('/admin')} className="admin-btn">
-            Quản trị
-          </button>
+      <div className="profile">
+        <h2>Profile - Redux Protected</h2>
+        {user && (
+          <div className="profile-card">
+            <div className="profile-field">
+              <label>ID:</label>
+              <span>{user.id}</span>
+            </div>
+            <div className="profile-field">
+              <label>Tên:</label>
+              <span>{user.name}</span>
+            </div>
+            <div className="profile-field">
+              <label>Email:</label>
+              <span>{user.email}</span>
+            </div>
+            <div className="profile-field">
+              <label>Vai trò:</label>
+              <span className={`role ${user.role}`}>{user.role}</span>
+            </div>
+          </div>
         )}
+        
+        <div className="form-actions">
+          <button onClick={handleLogout} className="delete-btn">
+            Đăng xuất
+          </button>
+          
+          {user?.role === 'admin' && (
+            <button onClick={() => navigate('/admin')} className="edit-btn">
+              Quản trị
+            </button>
+          )}
+        </div>
       </div>
     </div>
-  );
+  );}
 };
 
 export default ProfileRedux;

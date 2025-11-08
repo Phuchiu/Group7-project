@@ -26,8 +26,16 @@ const AppContent = () => {
         <nav className="navbar">
           <h1>User Management - Redux</h1>
           {isAuthenticated && (
-            <div className="nav-info">
-              Xin chào, <strong>{user?.name}</strong> ({user?.role})
+            <div className="nav-user-info">
+              <div className="avatar-display avatar-small">
+                <div className="avatar-fallback">
+                  {user?.name?.charAt(0)?.toUpperCase()}
+                </div>
+              </div>
+              <div className="nav-username">
+                {user?.name} 
+                <span className={`role-badge ${user?.role}`}>{user?.role}</span>
+              </div>
             </div>
           )}
         </nav>
@@ -62,9 +70,19 @@ const AppContent = () => {
             <Route 
               path="/unauthorized" 
               element={
-                <div className="error-page">
-                  <h2>Không có quyền truy cập</h2>
-                  <p>Bạn không có quyền truy cập trang này.</p>
+                <div className="auth-container">
+                  <div className="auth-form">
+                    <h2>🚫 Không có quyền</h2>
+                    <div className="error">
+                      Bạn không có quyền truy cập trang này.
+                    </div>
+                    <button 
+                      onClick={() => window.history.back()}
+                      className="link-btn"
+                    >
+                      Quay lại
+                    </button>
+                  </div>
                 </div>
               } 
             />
