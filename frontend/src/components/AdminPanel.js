@@ -1,11 +1,31 @@
 import React, { useState, useEffect } from 'react';
+import { useRole } from '../contexts/RoleContext';
 import api from '../services/api';
 
 const AdminPanel = () => {
+  const { hasRole, hasAnyRole } = useRole();
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  // Debug: Check user role
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  console.log('AdminPanel - Current user:', user);
+  console.log('AdminPanel - Has admin role:', hasRole('admin'));
+  
+  // Check if user has admin access
+  if (!hasRole('admin') && !hasAnyRole(['admin', 'moderator'])) {
+    return (
+      <div className="admin-panel">
+        <div className="error">
+          <h3>Bạn không có quyền truy cập trang này.</h3>
+          <p>Chỉ Admin hoặc Moderator mới có thể truy cập trang này.</p>
+          <p>Role hiện tại: {user.role || 'Không xác định'}</p>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     fetchData();
@@ -44,6 +64,15 @@ const AdminPanel = () => {
   return (
     <div className="admin-panel">
       <h2>Admin Panel</h2>
+      
+      {/* Debug Info */}
+      <div style={{background: '#f0f0f0', padding: '10px', marginBottom: '20px', fontSize: '12px'}}>
+        <strong>Debug Info:</strong><br/>
+        User: {user.name} ({user.email})<br/>
+        Role: {user.role}<br/>
+        Has Admin: {hasRole('admin') ? 'Yes' : 'No'}<br/>
+        Has Any Role: {hasAnyRole(['admin', 'moderator']) ? 'Yes' : 'No'}
+      </div>
       
       {error && <div className="error">{error}</div>}
 

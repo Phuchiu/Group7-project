@@ -31,14 +31,20 @@ function App() {
     const refreshToken = TokenManager.getRefreshToken();
     const userData = localStorage.getItem('user');
     
+    console.log('App useEffect - userData:', userData); // Debug log
+    
     if (accessToken && refreshToken && userData) {
-      setUser(JSON.parse(userData));
+      const parsedUser = JSON.parse(userData);
+      console.log('Parsed user:', parsedUser); // Debug log
+      setUser(parsedUser);
       setCurrentView('userlist');
     }
     setLoading(false);
   }, []);
 
   const handleLogin = (userData, accessToken) => {
+    console.log('Login userData:', userData); // Debug log
+    localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
     setCurrentView('userlist');
   };
