@@ -1,41 +1,33 @@
 import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+console.log('🔗 API Base URL:', API_BASE_URL);
 
-// Create axios instance
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
-// Secure token management - use sessionStorage for better security
+// ... (Phần TokenManager giữ nguyên) ...
 const TokenManager = {
-  getAccessToken: () => {
-    // Use same key as auth slice
-    return sessionStorage.getItem('token') || localStorage.getItem('token');
-  },
-  getRefreshToken: () => {
-    return sessionStorage.getItem('refreshToken') || localStorage.getItem('refreshToken');
-  },
+  getAccessToken: () => sessionStorage.getItem('token') || localStorage.getItem('token'),
+  getRefreshToken: () => sessionStorage.getItem('refreshToken') || localStorage.getItem('refreshToken'),
   setTokens: (accessToken, refreshToken) => {
-    // Use same key as auth slice
     sessionStorage.setItem('token', accessToken);
     sessionStorage.setItem('refreshToken', refreshToken);
-    // Clear any old localStorage tokens
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
   },
   clearTokens: () => {
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('refreshToken');
-    sessionStorage.removeItem('user');
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('user');
+    sessionStorage.clear();
+    localStorage.clear();
   }
 };
 
-// Request interceptor - add access token
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
     const token = TokenManager.getAccessToken();
@@ -47,48 +39,33 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor - handle token refresh
+// Response interceptor
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-
-    // Check for 401 error and avoid infinite loops
-    if (error.response?.status === 401 && 
-        !originalRequest._retry &&
-        !originalRequest.url?.includes('/auth/refresh')) {
-      
+    if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url?.includes('/auth/refresh')) {
       originalRequest._retry = true;
-      
       try {
         const refreshToken = TokenManager.getRefreshToken();
-        if (!refreshToken) {
-          throw new Error('No refresh token');
-        }
+        if (!refreshToken) throw new Error('No refresh token');
 
         console.log('🔄 Token expired, refreshing...');
-        
-        const response = await axios.post(`${API_BASE_URL}/api/auth/refresh`, {
-          refreshToken
-        });
+        const response = await axios.post(`${API_BASE_URL}/api/auth/refresh`, { refreshToken });
 
         const { accessToken } = response.data;
         TokenManager.setTokens(accessToken, refreshToken);
-        
-        console.log('✅ Token refreshed successfully');
-        
-        // Retry original request with new token
+        console.log('✅ Token refreshed');
+
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return api(originalRequest);
-        
       } catch (refreshError) {
-        console.log('❌ Refresh failed, redirecting to login');
+        console.log('❌ Session expired');
         TokenManager.clearTokens();
         window.location.reload();
         return Promise.reject(refreshError);
       }
     }
-
     return Promise.reject(error);
   }
 );
