@@ -101,7 +101,10 @@ const MyActivity = () => {
                   </div>
                   {log.details && (
                     <div className="activity-details">
-                      {log.details}
+                      {typeof log.details === 'object' && log.details !== null 
+                        ? JSON.stringify(log.details) 
+                        : log.details
+                      }
                     </div>
                   )}
                   <div className="activity-time">

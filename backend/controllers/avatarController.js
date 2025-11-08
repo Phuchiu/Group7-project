@@ -1,6 +1,6 @@
 const User = require('../models/User');
-const cloudinary = require('../config/cloudinary');
-const sharp = require('sharp');
+const fs = require('fs');
+const path = require('path');
 
 // Upload avatar
 const uploadAvatar = async (req, res) => {
@@ -10,46 +10,24 @@ const uploadAvatar = async (req, res) => {
     }
 
     const userId = req.user._id;
+    const fileExtension = path.extname(req.file.originalname);
+    const fileName = `avatar_${userId}_${Date.now()}${fileExtension}`;
+    const avatarUrl = `/uploads/${fileName}`;
 
-    // Resize image using Sharp
-    const resizedImageBuffer = await sharp(req.file.buffer)
-      .resize(300, 300, {
-        fit: 'cover',
-        position: 'center'
-      })
-      .jpeg({ quality: 80 })
-      .toBuffer();
-
-    // Upload to Cloudinary
-    const uploadResult = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
-        {
-          resource_type: 'image',
-          folder: 'avatars',
-          public_id: `avatar_${userId}`,
-          overwrite: true,
-          transformation: [
-            { width: 300, height: 300, crop: 'fill' },
-            { quality: 'auto' }
-          ]
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      ).end(resizedImageBuffer);
-    });
+    // Save file to uploads directory
+    const uploadPath = path.join(__dirname, '../uploads', fileName);
+    fs.writeFileSync(uploadPath, req.file.buffer);
 
     // Update user avatar URL in database
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { avatar: uploadResult.secure_url },
+      { avatar: avatarUrl },
       { new: true }
     ).select('-password');
 
     res.json({
       message: 'Upload avatar thành công',
-      avatar: uploadResult.secure_url,
+      avatar: avatarUrl,
       user: updatedUser
     });
 
@@ -66,12 +44,14 @@ const uploadAvatar = async (req, res) => {
 const deleteAvatar = async (req, res) => {
   try {
     const userId = req.user._id;
+    const user = await User.findById(userId);
 
-    // Delete from Cloudinary
-    try {
-      await cloudinary.uploader.destroy(`avatars/avatar_${userId}`);
-    } catch (cloudinaryError) {
-      console.log('Cloudinary delete error:', cloudinaryError.message);
+    // Delete file from uploads directory
+    if (user.avatar) {
+      const filePath = path.join(__dirname, '..', user.avatar);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
     }
 
     // Remove avatar URL from database

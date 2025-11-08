@@ -1,21 +1,19 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const path = require('path');
+const http = require('http');
 require('dotenv').config();
 
 const app = express();
 
-// Middleware - CORS cho phép tất cả origins
-app.use(cors({
-  origin: '*',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-app.use(express.json());
+// Middleware - TĂNG GIỚI HẠN
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(cors());
 
-// Static files for uploads
-app.use('/uploads', express.static('uploads'));
+// Static files
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 const userRoutes = require('./routes/user');
@@ -32,7 +30,7 @@ app.use('/api/rbac', rbacRoutes);
 app.use('/api/avatar', avatarRoutes);
 app.use('/api/activity', activityRoutes);
 
-// Root route for testing
+// Root route
 app.get('/', (req, res) => {
   res.json({
     message: 'User Management API - Group 7',
@@ -52,13 +50,11 @@ mongoose.connect(process.env.MONGODB_URI)
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n${'='.repeat(60)}`);
-  console.log(`🚀 Server is running!`);
-  console.log(`${'='.repeat(60)}`);
-  console.log(`📍 Local:   http://localhost:${PORT}`);
-  console.log(`🌐 Network: http://192.168.56.1:${PORT}`);
-  console.log(`📚 API:     http://192.168.56.1:${PORT}/api`);
-  console.log(`🔑 Login:   http://192.168.56.1:${PORT}/api/auth/login`);
-  console.log(`${'='.repeat(60)}\n`);
+// TẠO SERVER VỚI GIỚI HẠN HEADER LỚN HƠN
+const server = http.createServer({
+  maxHeaderSize: 32768 // 32KB (mặc định là 8KB)
+}, app);
+
+server.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

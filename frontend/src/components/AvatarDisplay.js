@@ -16,11 +16,17 @@ const AvatarDisplay = ({ avatar, name, size = 'medium', className = '' }) => {
       .slice(0, 2);
   };
 
+  const getAvatarUrl = (avatar) => {
+    if (!avatar) return null;
+    if (avatar.startsWith('http')) return avatar;
+    return `http://localhost:3001${avatar}`;
+  };
+
   return (
     <div className={`avatar-display ${sizeClasses[size]} ${className}`}>
       {avatar ? (
         <img 
-          src={avatar} 
+          src={getAvatarUrl(avatar)} 
           alt={`${name}'s avatar`}
           className="avatar-img"
           onError={(e) => {

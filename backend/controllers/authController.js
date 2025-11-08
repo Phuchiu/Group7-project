@@ -218,4 +218,22 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = { signup, login, refreshAccessToken, logout, revokeAllTokens, forgotPassword, resetPassword };
+// Verify token for Redux - kiểm tra token có hợp lệ không
+const verifyToken = async (req, res) => {
+  try {
+    // Middleware auth đã verify token và gán user vào req.user
+    res.json({
+      message: 'Token hợp lệ',
+      user: {
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        role: req.user.role
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
+  }
+};
+
+module.exports = { signup, login, refreshAccessToken, logout, revokeAllTokens, forgotPassword, resetPassword, verifyToken };

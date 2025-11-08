@@ -203,7 +203,10 @@ const ActivityLogs = () => {
                     </span>
                   </td>
                   <td className="details">
-                    {log.details || '-'}
+                    {typeof log.details === 'object' && log.details !== null 
+                      ? JSON.stringify(log.details) 
+                      : log.details || '-'
+                    }
                   </td>
                   <td className="ip-address">
                     {log.ipAddress}
