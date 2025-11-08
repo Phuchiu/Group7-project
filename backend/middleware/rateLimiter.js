@@ -12,6 +12,9 @@ const generalLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+  validate: {
+    xForwardedForHeader: false,
+  },
 });
 
 // Strict login rate limiter
@@ -26,6 +29,9 @@ const loginLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+  validate: {
+    xForwardedForHeader: false,
+  },
   handler: async (req, res) => {
     // Log rate limit hit
     await logFailedActivity(
@@ -66,6 +72,9 @@ const uploadLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+  validate: {
+    xForwardedForHeader: false,
+  },
 });
 
 // Password reset rate limiter
@@ -78,6 +87,9 @@ const passwordResetLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+  validate: {
+    xForwardedForHeader: false,
+  },
 });
 
 module.exports = {

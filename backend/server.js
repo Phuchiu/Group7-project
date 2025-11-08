@@ -9,6 +9,9 @@ require('dotenv').config();
 
 const app = express();
 
+// IMPORTANT: Trust proxy for Render deployment
+app.set('trust proxy', 1);
+
 // Security middleware
 const { securityHeaders, sanitizeInput, validateRequest } = require('./middleware/security');
 
