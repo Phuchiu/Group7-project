@@ -18,6 +18,9 @@ const AvatarDisplay = ({ avatar, name, size = 'medium', className = '' }) => {
 
   const getAvatarUrl = (avatar) => {
     if (!avatar) return null;
+    // If it's base64 data, return as is
+    if (avatar.startsWith('data:image/')) return avatar;
+    // Legacy support for URL paths
     if (avatar.startsWith('http')) return avatar;
     return `http://localhost:3000${avatar}`;
   };

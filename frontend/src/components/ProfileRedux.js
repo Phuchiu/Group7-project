@@ -30,10 +30,11 @@ const ProfileRedux = () => {
             {user?.avatar ? (
               <img 
                 key={avatarKey}
-                src={user.avatar.startsWith('http') ? user.avatar : `http://localhost:3000${user.avatar}?t=${avatarKey}`} 
+                src={user.avatar.startsWith('data:image/') ? user.avatar : (user.avatar.startsWith('http') ? user.avatar : `http://localhost:3000${user.avatar}?t=${avatarKey}`)} 
                 alt="Avatar" 
                 className="avatar-img"
                 onError={(e) => {
+                  console.error('Avatar load error in Profile:', e.target.src);
                   e.target.style.display = 'none';
                   e.target.nextSibling.style.display = 'flex';
                 }}

@@ -1,7 +1,14 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
-// Configure multer for memory storage
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Configure multer for memory storage (for base64 conversion)
 const storage = multer.memoryStorage();
 
 // File filter for images only

@@ -1,46 +1,39 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateAvatar } from '../store/authSlice';
 import api from '../services/api';
 
-// Sanitize image source to prevent XSS
+// Sanitize and validate base64 image source
 const sanitizeImageSrc = (src) => {
   if (!src) return '';
   
-  // If it's a data URL (base64), return as is
+  console.log('Original src type:', typeof src, 'length:', src.length);
+  
+  // If it's a data URL (base64), validate and return
   if (src.startsWith('data:image/')) {
+    console.log('Base64 image detected');
     return src;
   }
   
-  // If it's already a full URL, validate it
-  if (src.startsWith('http://') || src.startsWith('https://')) {
-    try {
-      const url = new URL(src);
-      // Only allow localhost for development
-      if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
-        return src;
-      }
-    } catch (e) {
-      return '';
-    }
-    return '';
-  }
-  
-  // If it's a relative path, prepend the base URL
-  if (src.startsWith('/uploads/')) {
-    return `http://localhost:3000${src}`;
-  }
-  
+  console.log('Invalid image source');
   return '';
 };
 
 const AvatarUpload = ({ currentAvatar, onAvatarUpdate }) => {
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
   const [uploading, setUploading] = useState(false);
-  const [preview, setPreview] = useState(currentAvatar);
+  const [preview, setPreview] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const fileInputRef = useRef(null);
+  
+  // Update preview when currentAvatar or user.avatar changes
+  useEffect(() => {
+    const avatarToShow = user?.avatar || currentAvatar;
+    console.log('Setting preview to:', avatarToShow);
+    setPreview(avatarToShow);
+  }, [currentAvatar, user?.avatar]);
 
   // Clear messages after 5 seconds
   useEffect(() => {
@@ -97,13 +90,22 @@ const AvatarUpload = ({ currentAvatar, onAvatarUpdate }) => {
         }
       });
 
-      setError(''); // Clear any existing error
+      console.log('Upload response:', response.data);
+      setError('');
       setSuccess('Upload avatar thành công!');
-      // Use the avatar path from response, frontend will handle full URL
-      setPreview(response.data.avatar);
-      onAvatarUpdate && onAvatarUpdate(response.data.avatar);
+      
+      // Set preview with the base64 avatar data from response
+      const avatarData = response.data.avatar;
+      console.log('Avatar data received:', avatarData ? 'Base64 data present' : 'No data');
+      setPreview(avatarData);
+      onAvatarUpdate && onAvatarUpdate(avatarData);
       // Update Redux store
-      dispatch(updateAvatar(response.data.avatar));
+      dispatch(updateAvatar(avatarData));
+      
+      // Clear file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
 
     } catch (error) {
       setSuccess(''); // Clear any existing success

@@ -25,4 +25,26 @@ router.delete('/delete', auth, deleteAvatar);
 // Get avatar info
 router.get('/info', auth, getAvatarInfo);
 
+// Test route for debugging
+router.get('/test', (req, res) => {
+  const fs = require('fs');
+  const path = require('path');
+  const uploadsDir = path.join(__dirname, '../uploads');
+  
+  if (!fs.existsSync(uploadsDir)) {
+    return res.json({ 
+      error: 'Uploads directory does not exist',
+      path: uploadsDir
+    });
+  }
+  
+  const files = fs.readdirSync(uploadsDir);
+  res.json({ 
+    uploadsDir,
+    files,
+    message: 'Avatar system working',
+    staticUrl: '/uploads/'
+  });
+});
+
 module.exports = router;

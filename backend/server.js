@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const http = require('http');
 const session = require('express-session');
+const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
@@ -38,38 +39,63 @@ app.use(sanitizeInput);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-// CORS configuration with restricted origins
-const corsOptions = {
-  origin: function (origin, callback) {
-    const allowedOrigins = [
-      'http://localhost:3001',
-      'http://localhost:3000',
-      process.env.FRONTEND_URL
-    ].filter(Boolean);
-    
-    // Allow requests with no origin (mobile apps, etc.)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  optionsSuccessStatus: 200
-};
+// CORS configuration - allow all origins for development
+if (process.env.NODE_ENV === 'production') {
+  const corsOptions = {
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        'http://localhost:3001',
+        'http://localhost:3000',
+        process.env.FRONTEND_URL
+      ].filter(Boolean);
+      
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+    optionsSuccessStatus: 200
+  };
+  app.use(cors(corsOptions));
+} else {
+  // Development - allow all origins
+  app.use(cors({
+    origin: true,
+    credentials: true
+  }));
+}
 
-app.use(cors(corsOptions));
-
-// Static files with security headers
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+// Static files with CORS headers - BEFORE other middleware
+app.use('/uploads', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+}, express.static(path.join(__dirname, 'uploads'), {
   setHeaders: (res, filePath) => {
-    // Security headers for static files
-    res.set('X-Content-Type-Options', 'nosniff');
-    res.set('Cache-Control', 'public, max-age=31536000');
+    res.set('Cache-Control', 'public, max-age=3600');
   }
 }));
+
+// Debug route to check uploads
+app.get('/debug/uploads/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(__dirname, 'uploads', filename);
+  
+  if (fs.existsSync(filePath)) {
+    res.json({ 
+      exists: true, 
+      path: filePath,
+      url: `/uploads/${filename}`
+    });
+  } else {
+    res.json({ exists: false, path: filePath });
+  }
+});
 
 // Routes
 const userRoutes = require('./routes/user');

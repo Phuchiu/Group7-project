@@ -84,7 +84,21 @@ const NavigationRedux = () => {
       <div className="nav-user">
         <div className="user-info">
           <div className="avatar-display avatar-small">
-            <div className="avatar-fallback">
+            {user?.avatar ? (
+              <img 
+                src={user.avatar.startsWith('data:image/') ? user.avatar : (user.avatar.startsWith('http') ? user.avatar : `http://localhost:3000${user.avatar}`)} 
+                alt="Avatar" 
+                className="avatar-img"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+            ) : null}
+            <div 
+              className="avatar-fallback"
+              style={{ display: user?.avatar ? 'none' : 'flex' }}
+            >
               {user?.name?.charAt(0)?.toUpperCase()}
             </div>
           </div>

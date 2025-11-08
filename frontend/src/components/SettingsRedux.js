@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logoutUser } from '../store/authSlice';
 import AvatarUpload from './AvatarUpload';
 import RefreshTokenTest from './RefreshTokenTest';
 import RateLimitDemo from './RateLimitDemo';
+import AvatarTest from './AvatarTest';
 
 const SettingsRedux = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('profile');
-  const [currentAvatar, setCurrentAvatar] = useState(user?.avatar || '');
+  
+  // Sync avatar with Redux store
+  useEffect(() => {
+    console.log('User avatar from Redux:', user?.avatar);
+  }, [user?.avatar]);
 
   const handleLogoutAll = () => {
     if (window.confirm('Đăng xuất khỏi tất cả thiết bị?')) {
@@ -91,10 +96,34 @@ const SettingsRedux = () => {
           {activeTab === 'avatar' && (
             <div className="avatar-settings">
               <h3>🖼️ Avatar Settings</h3>
+              <div className="current-avatar-display">
+                <h4>Current Avatar:</h4>
+                {user?.avatar ? (
+                  <img 
+                    src={user.avatar.startsWith('http') ? user.avatar : `http://localhost:3000${user.avatar}`}
+                    alt="Current Avatar" 
+                    style={{ width: '100px', height: '100px', borderRadius: '50%', marginBottom: '10px' }}
+                    onError={(e) => {
+                      console.error('Current avatar failed to load:', e.target.src);
+                      e.target.style.display = 'none';
+                    }}
+                    onLoad={() => console.log('Current avatar loaded successfully')}
+                  />
+                ) : (
+                  <div style={{ width: '100px', height: '100px', borderRadius: '50%', backgroundColor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px' }}>
+                    No Avatar
+                  </div>
+                )}
+              </div>
               <AvatarUpload 
-                currentAvatar={currentAvatar}
-                onAvatarUpdate={(newAvatar) => setCurrentAvatar(newAvatar)}
+                currentAvatar={user?.avatar}
+                onAvatarUpdate={(newAvatar) => {
+                  console.log('Avatar updated in Settings:', newAvatar);
+                  // Redux will handle the update via AvatarUpload component
+                }}
               />
+              
+              <AvatarTest />
             </div>
           )}
 
