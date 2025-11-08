@@ -34,7 +34,7 @@ const updateProfile = async (req, res) => {
     
     // Handle avatar upload
     if (req.file) {
-      updateData.avatar = `http://localhost:3000/uploads/${req.file.filename}`;
+      updateData.avatar = `/uploads/${req.file.filename}`;
     }
 
     const updatedUser = await User.findByIdAndUpdate(

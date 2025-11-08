@@ -65,4 +65,82 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { signup, login };
+const { sendResetPasswordEmail } = require('../services/emailService');
+
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    
+    if (!user) {
+      return res.status(404).json({ message: 'Email không tồn tại' });
+    }
+
+    // Tạo reset token (6 số ngẫu nhiên)
+    const resetToken = Math.floor(100000 + Math.random() * 900000).toString();
+    const resetTokenExpiry = Date.now() + 3600000; // 1 giờ
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = resetTokenExpiry;
+    await user.save();
+
+    // Gửi email
+    const emailSent = await sendResetPasswordEmail(email, resetToken);
+    
+    if (emailSent) {
+      res.json({ 
+        message: 'Mã xác nhận đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư.'
+      });
+    } else {
+      res.status(500).json({ message: 'Không thể gửi email. Vui lòng thử lại sau' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Token không hợp lệ hoặc đã hết hạn' });
+    }
+
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.json({ message: 'Đặt lại mật khẩu thành công' });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
+  }
+};
+
+const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const user = await User.findById(req.user._id);
+
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Mật khẩu hiện tại không đúng' });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ message: 'Đổi mật khẩu thành công' });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
+  }
+};
+
+module.exports = { signup, login, forgotPassword, resetPassword, changePassword };

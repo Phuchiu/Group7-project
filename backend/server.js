@@ -21,10 +21,12 @@ app.use('/uploads', express.static('uploads'));
 const userRoutes = require('./routes/user');
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
+const adminRoutes = require('./routes/admin');
 
 app.use('/api', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api', profileRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Root route for testing
 app.get('/', (req, res) => {

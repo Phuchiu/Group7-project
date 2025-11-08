@@ -45,8 +45,8 @@ function Resetpassword() {
       setLoading(true);
       const token = localStorage.getItem('token');
       
-      await axios.put(
-        `${API_URL}/auth/reset-password`,
+      await axios.post(
+        `${API_URL}/auth/change-password`,
         {
           currentPassword: formData.currentPassword,
           newPassword: formData.newPassword
