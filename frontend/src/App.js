@@ -13,6 +13,9 @@ import RoleBasedNav from './components/RoleBasedNav';
 import RoleManagement from './components/RoleManagement';
 import ModeratorPanel from './components/ModeratorPanel';
 import PermissionDisplay from './components/PermissionDisplay';
+import ActivityLogs from './components/ActivityLogs';
+import RateLimitDemo from './components/RateLimitDemo';
+import MyActivity from './components/MyActivity';
 import { RoleProvider } from './contexts/RoleContext';
 import { TokenManager } from './services/api';
 import './styles.css';
@@ -118,12 +121,15 @@ function App() {
           {currentView === 'profile' && (
             <>
               <Profile user={user} setUser={setUser} />
+              <MyActivity />
               <PermissionDisplay />
             </>
           )}
           {currentView === 'admin' && <AdminPanel />}
           {currentView === 'roles' && <RoleManagement />}
           {currentView === 'moderate' && <ModeratorPanel />}
+          {currentView === 'logs' && <ActivityLogs />}
+          {currentView === 'ratetest' && <RateLimitDemo />}
         </main>
       </div>
     </RoleProvider>

@@ -51,6 +51,26 @@ const RoleBasedNav = ({ currentView, setCurrentView, onLogout, user }) => {
         </button>
       )}
 
+      {/* Admin only - Activity Logs */}
+      {hasRole('admin') && (
+        <button 
+          onClick={() => setCurrentView('logs')}
+          className={currentView === 'logs' ? 'active' : ''}
+        >
+          Activity Logs
+        </button>
+      )}
+
+      {/* Admin only - Rate Limit Test */}
+      {hasRole('admin') && (
+        <button 
+          onClick={() => setCurrentView('ratetest')}
+          className={currentView === 'ratetest' ? 'active' : ''}
+        >
+          Rate Limit Test
+        </button>
+      )}
+
       {/* Moderator only - User Management */}
       {hasRole('moderator') && (
         <button 
