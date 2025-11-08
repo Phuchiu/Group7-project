@@ -1,0 +1,234 @@
+{
+  "info": {
+    "name": "Logging & Rate Limit Tests - Group 7",
+    "description": "Test collection for Activity Logging and Rate Limiting",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Rate Limiting Tests",
+      "item": [
+        {
+          "name": "Login Success (1st attempt)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/login"
+          }
+        },
+        {
+          "name": "Login Failed (2nd attempt)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"wrongpassword\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/login"
+          }
+        },
+        {
+          "name": "Login Failed (3rd attempt)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"wrongpassword\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/login"
+          }
+        },
+        {
+          "name": "Login Failed (4th attempt)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"wrongpassword\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/login"
+          }
+        },
+        {
+          "name": "Login Failed (5th attempt)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"wrongpassword\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/login"
+          }
+        },
+        {
+          "name": "Login Failed (6th attempt - SHOULD BE BLOCKED)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"wrongpassword\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Activity Logging Tests",
+      "item": [
+        {
+          "name": "Login Admin (Creates Log)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/login"
+          }
+        },
+        {
+          "name": "Get Activity Stats (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"}],
+            "url": {
+              "raw": "http://localhost:3000/api/activity/stats?days=7",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "activity", "stats"],
+              "query": [{"key": "days", "value": "7"}]
+            }
+          }
+        },
+        {
+          "name": "Get All Activity Logs (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"}],
+            "url": {
+              "raw": "http://localhost:3000/api/activity/logs?page=1&limit=20",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "activity", "logs"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "20"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get My Activity Logs (User)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{userToken}}"}],
+            "url": {
+              "raw": "http://localhost:3000/api/activity/my-logs?page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "activity", "my-logs"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter Logs by Action (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"}],
+            "url": {
+              "raw": "http://localhost:3000/api/activity/logs?action=LOGIN_SUCCESS&page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "activity", "logs"],
+              "query": [
+                {"key": "action", "value": "LOGIN_SUCCESS"},
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Upload Rate Limiting",
+      "item": [
+        {
+          "name": "Upload Avatar (1st attempt)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"}],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "avatar", "type": "file", "src": "path/to/image.jpg"}
+              ]
+            },
+            "url": "http://localhost:3000/api/avatar/upload"
+          }
+        },
+        {
+          "name": "Upload Avatar (2nd attempt)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"}],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "avatar", "type": "file", "src": "path/to/image.jpg"}
+              ]
+            },
+            "url": "http://localhost:3000/api/avatar/upload"
+          }
+        },
+        {
+          "name": "Upload Avatar (3rd attempt)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"}],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "avatar", "type": "file", "src": "path/to/image.jpg"}
+              ]
+            },
+            "url": "http://localhost:3000/api/avatar/upload"
+          }
+        },
+        {
+          "name": "Upload Avatar (4th attempt - SHOULD BE BLOCKED)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{adminToken}}"}],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "avatar", "type": "file", "src": "path/to/image.jpg"}
+              ]
+            },
+            "url": "http://localhost:3000/api/avatar/upload"
+          }
+        }
+      ]
+    }
+  ]
+}

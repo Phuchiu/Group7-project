@@ -23,12 +23,14 @@ const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
 const rbacRoutes = require('./routes/rbac');
 const avatarRoutes = require('./routes/avatar');
+const activityRoutes = require('./routes/activity');
 
 app.use('/api', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api', profileRoutes);
 app.use('/api/rbac', rbacRoutes);
 app.use('/api/avatar', avatarRoutes);
+app.use('/api/activity', activityRoutes);
 
 // Root route for testing
 app.get('/', (req, res) => {

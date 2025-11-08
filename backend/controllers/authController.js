@@ -2,6 +2,7 @@ const User = require('../models/User');
 const RefreshToken = require('../models/RefreshToken');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const { logActivity, logFailedActivity } = require('../middleware/activityLogger');
 const { sendResetPasswordEmail } = require('../services/emailService');
 
 const generateAccessToken = (userId) => {
@@ -37,6 +38,9 @@ const signup = async (req, res) => {
     const accessToken = generateAccessToken(user._id);
     const refreshToken = await generateRefreshToken(user._id);
     
+    // Log signup activity
+    await logActivity(user._id, 'SIGNUP', `New user registered: ${email}`, req);
+    
     res.status(201).json({
       message: 'Đăng ký thành công',
       accessToken,
@@ -64,11 +68,16 @@ const login = async (req, res) => {
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
+      // Log failed login
+      await logFailedActivity('LOGIN_FAILED', `Failed login attempt for: ${email}`, req, { email });
       return res.status(400).json({ message: 'Email hoặc mật khẩu không đúng' });
     }
 
     const accessToken = generateAccessToken(user._id);
     const refreshToken = await generateRefreshToken(user._id);
+    
+    // Log successful login
+    await logActivity(user._id, 'LOGIN_SUCCESS', `User logged in: ${email}`, req);
     
     res.json({
       message: 'Đăng nhập thành công',
@@ -131,6 +140,12 @@ const logout = async (req, res) => {
         { token: refreshToken },
         { isRevoked: true }
       );
+    }
+    
+    // Log logout activity
+    const userId = req.user?._id;
+    if (userId) {
+      await logActivity(userId, 'LOGOUT', 'User logged out', req);
     }
     
     res.json({ message: 'Đăng xuất thành công' });

@@ -4,6 +4,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
+import ForgotPasswordDemo from './components/ForgotPasswordDemo';
 import Profile from './components/Profile';
 import AdminPanel from './components/AdminPanel';
 import UserList from './components/UserList';
@@ -68,6 +69,7 @@ function App() {
       <Router>
         <div className="app">
           <Routes>
+            <Route path="/demo" element={<ForgotPasswordDemo />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="*" element={
               <div className="auth-container">
