@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const { logActivity } = require('../middleware/logger');
 
 // Get user profile
 const getProfile = async (req, res) => {
@@ -42,6 +43,8 @@ const updateProfile = async (req, res) => {
       updateData,
       { new: true }
     ).select('-password');
+
+    await logActivity(userId, 'UPDATE_PROFILE', 'User updated profile', req);
 
     res.json({
       message: 'Cập nhật profile thành công',

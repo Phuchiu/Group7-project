@@ -1,0 +1,395 @@
+/* src/components/Admin/UserLogs.css */
+/* Hoạt động 5: User Activity Logs Styles */
+
+.logs-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.logs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.logs-header h2 {
+  margin: 0;
+  color: #2d3748;
+}
+
+.btn-refresh {
+  background: #4299e1;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn-refresh:hover {
+  background: #3182ce;
+  transform: translateY(-2px);
+}
+
+/* Statistics Cards */
+.logs-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2d3748;
+}
+
+.stat-label {
+  color: #718096;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+/* Filters */
+.logs-filters {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-group label {
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.filter-group select,
+.filter-group input {
+  padding: 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border-color 0.3s;
+}
+
+.filter-group select:focus,
+.filter-group input:focus {
+  outline: none;
+  border-color: #4299e1;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-apply,
+.btn-clear {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn-apply {
+  background: #48bb78;
+  color: white;
+}
+
+.btn-apply:hover {
+  background: #38a169;
+}
+
+.btn-clear {
+  background: #e2e8f0;
+  color: #2d3748;
+}
+
+.btn-clear:hover {
+  background: #cbd5e0;
+}
+
+/* Logs Table */
+.logs-table-container {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.no-logs {
+  text-align: center;
+  padding: 3rem;
+  color: #718096;
+}
+
+.no-logs p {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.logs-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.logs-table thead {
+  background: #f7fafc;
+}
+
+.logs-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #2d3748;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.logs-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: top;
+}
+
+.logs-table tbody tr:hover {
+  background: #f7fafc;
+}
+
+/* Log Time */
+.log-time {
+  white-space: nowrap;
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+/* Action Badge */
+.action-badge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.action-badge.action-success {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.action-badge.action-info {
+  background: #bee3f8;
+  color: #2c5282;
+}
+
+.action-badge.action-primary {
+  background: #c3dafe;
+  color: #2a4365;
+}
+
+.action-badge.action-warning {
+  background: #feebc8;
+  color: #7c2d12;
+}
+
+.action-badge.action-danger {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+.action-badge.action-default {
+  background: #e2e8f0;
+  color: #2d3748;
+}
+
+/* User Info */
+.log-user .user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.log-user strong {
+  color: #2d3748;
+}
+
+.log-user small {
+  color: #718096;
+  font-size: 0.85rem;
+}
+
+/* Log Details */
+.log-details {
+  color: #4a5568;
+  max-width: 300px;
+}
+
+/* IP Address */
+.log-ip code {
+  background: #edf2f7;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #4a5568;
+}
+
+/* Alert */
+.alert {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid;
+}
+
+.alert-error {
+  background: #fed7d7;
+  color: #742a2a;
+  border-left-color: #e53e3e;
+}
+
+.alert-info {
+  background: #bee3f8;
+  color: #2c5282;
+  border-left-color: #3182ce;
+}
+
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #718096;
+}
+
+/* Debug Section */
+.debug-section {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: #f7fafc;
+  border: 1px dashed #cbd5e0;
+  border-radius: 8px;
+}
+
+.debug-section h3 {
+  margin-top: 0;
+  color: #2d3748;
+}
+
+.debug-info p {
+  margin: 0.5rem 0;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .logs-table {
+    font-size: 0.9rem;
+  }
+
+  .logs-table th,
+  .logs-table td {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .logs-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .logs-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .logs-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-group {
+    min-width: 100%;
+  }
+
+  .filter-actions {
+    width: 100%;
+  }
+
+  .btn-apply,
+  .btn-clear {
+    flex: 1;
+  }
+
+  .logs-table-container {
+    overflow-x: scroll;
+  }
+
+  .logs-table {
+    min-width: 800px;
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.logs-table tbody tr {
+  animation: fadeIn 0.3s ease-out;
+}

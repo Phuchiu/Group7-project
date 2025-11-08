@@ -10,6 +10,7 @@ import Usersdashboard from './pages/Userdashboard';
 import Forgotpassword from './pages/Forgotpassword';
 import Resetpassword from './pages/Resetpassword';
 import Uploadavatar from './pages/Uploadavatar';
+import AdminLogs from './pages/AdminLogs';
 
 import './styles/App.css';
 
@@ -78,12 +79,21 @@ function App() {
             } 
           />
           
-          {/* Admin Route */}
+          {/* Admin Routes */}
           <Route 
             path="/admin" 
             element={
               <AdminRoute>
                 <Usersdashboard />
+              </AdminRoute>
+            } 
+          />
+          
+          <Route 
+            path="/admin/logs" 
+            element={
+              <AdminRoute>
+                <AdminLogs />
               </AdminRoute>
             } 
           />

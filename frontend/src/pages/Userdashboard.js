@@ -85,9 +85,14 @@ function Usersdashboard() {
     <div className="admin-container">
       <div className="admin-header">
         <h2>👑 Quản lý Users (Admin)</h2>
-        <button onClick={() => navigate('/profile')} className="btn-back">
-          ← Về Profile
-        </button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button onClick={() => navigate('/admin/logs')} className="btn-logs">
+            📊 Xem Logs
+          </button>
+          <button onClick={() => navigate('/profile')} className="btn-back">
+            ← Về Profile
+          </button>
+        </div>
       </div>
 
       <div className="stats">

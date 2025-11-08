@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const { logActivity } = require('../middleware/logger');
 
 const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
@@ -18,6 +19,8 @@ const signup = async (req, res) => {
     await user.save();
 
     const token = generateToken(user._id);
+    
+    await logActivity(user._id, 'REGISTER', `User ${user.name} registered`, req);
     
     res.status(201).json({
       message: 'Đăng ký thành công',
@@ -49,6 +52,8 @@ const login = async (req, res) => {
     }
 
     const token = generateToken(user._id);
+    
+    await logActivity(user._id, 'LOGIN', `User ${user.name} logged in`, req);
     
     res.json({
       message: 'Đăng nhập thành công',
@@ -136,6 +141,8 @@ const changePassword = async (req, res) => {
 
     user.password = newPassword;
     await user.save();
+
+    await logActivity(req.user._id, 'CHANGE_PASSWORD', 'User changed password', req);
 
     res.json({ message: 'Đổi mật khẩu thành công' });
   } catch (error) {

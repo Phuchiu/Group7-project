@@ -69,6 +69,11 @@ function Login() {
       const errorMessage = err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.';
       setError(errorMessage);
       
+      // Hiển thị thông báo rate limit rõ ràng
+      if (err.response?.status === 429) {
+        alert('⚠️ QUÁ NHIỀU LẦN ĐĂNG NHẬP THẤT BẠI!\n\nVui lòng chờ 1 phút rồi thử lại.');
+      }
+      
       // Log thêm để debug
       if (err.response) {
         console.error('Response status:', err.response.status);

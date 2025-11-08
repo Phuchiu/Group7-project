@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { auth, adminAuth } = require('../middleware/auth');
 const User = require('../models/User');
+const ActivityLog = require('../models/ActivityLog');
+const { logActivity } = require('../middleware/logger');
 
 // Get all users (Admin only)
 router.get('/users', auth, adminAuth, async (req, res) => {
@@ -30,7 +32,22 @@ router.put('/users/:id/role', auth, adminAuth, async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
     
+    await logActivity(req.user._id, 'UPDATE_ROLE', `Admin updated role of ${user.name} to ${role}`, req);
+    
     res.json({ message: 'Role updated', user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get activity logs (Admin only)
+router.get('/logs', auth, adminAuth, async (req, res) => {
+  try {
+    const logs = await ActivityLog.find()
+      .populate('user', 'name email')
+      .sort({ createdAt: -1 })
+      .limit(100);
+    res.json({ logs });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -43,6 +60,8 @@ router.delete('/users/:id', auth, adminAuth, async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+    await logActivity(req.user._id, 'DELETE_USER', `Admin deleted user ${user.name}`, req);
+    
     res.json({ message: 'User deleted' });
   } catch (error) {
     res.status(500).json({ message: error.message });
