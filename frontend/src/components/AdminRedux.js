@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
+import api from '../services/api';
 
 const AdminRedux = () => {
   const { user, token } = useSelector((state) => state.auth);
@@ -11,9 +11,7 @@ const AdminRedux = () => {
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:3000/api/users', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get('/api/users');
       setUsers(response.data.users);
     } catch (error) {
       setError('Không thể tải danh sách users');
@@ -30,9 +28,7 @@ const AdminRedux = () => {
     if (!window.confirm('Bạn có chắc muốn xóa user này?')) return;
     
     try {
-      await axios.delete(`http://localhost:3000/api/users/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.delete(`/api/users/${userId}`);
       fetchUsers();
     } catch (error) {
       setError('Không thể xóa user');

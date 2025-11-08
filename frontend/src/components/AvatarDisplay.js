@@ -22,7 +22,8 @@ const AvatarDisplay = ({ avatar, name, size = 'medium', className = '' }) => {
     if (avatar.startsWith('data:image/')) return avatar;
     // Legacy support for URL paths
     if (avatar.startsWith('http')) return avatar;
-    return `http://localhost:3000${avatar}`;
+    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+    return `${API_URL}${avatar}`;
   };
 
   return (

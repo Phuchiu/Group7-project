@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
+import api from '../services/api';
 
 const UsersRedux = () => {
   const { user, token } = useSelector((state) => state.auth);
@@ -16,9 +16,7 @@ const UsersRedux = () => {
     setError('');
     try {
       console.log('Fetching users with token:', token ? 'Token exists' : 'No token');
-      const response = await axios.get('http://localhost:3000/api/users', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get('/api/users');
       console.log('Users response:', response.data);
       setUsers(response.data.users || []);
     } catch (error) {
@@ -38,13 +36,9 @@ const UsersRedux = () => {
     e.preventDefault();
     try {
       if (editingUser) {
-        await axios.put(`http://localhost:3000/api/users/${editingUser._id}`, formData, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await api.put(`/api/users/${editingUser._id}`, formData);
       } else {
-        await axios.post('http://localhost:3000/api/users', formData, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await api.post('/api/users', formData);
       }
       setFormData({ name: '', email: '' });
       setShowAddForm(false);
@@ -65,9 +59,7 @@ const UsersRedux = () => {
     if (!window.confirm('Bạn có chắc muốn xóa user này?')) return;
     
     try {
-      await axios.delete(`http://localhost:3000/api/users/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.delete(`/api/users/${userId}`);
       fetchUsers();
     } catch (error) {
       setError('Không thể xóa user');

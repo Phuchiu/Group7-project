@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 
 const DashboardRedux = () => {
   const { user, token } = useSelector((state) => state.auth);
@@ -18,16 +18,12 @@ const DashboardRedux = () => {
   const fetchDashboardData = useCallback(async () => {
     try {
       // Fetch user stats
-      const statsResponse = await axios.get('http://localhost:3000/api/users/stats', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const statsResponse = await api.get('/api/users/stats');
       setStats(statsResponse.data);
 
       // Fetch recent activity if admin
       if (user?.role === 'admin') {
-        const activityResponse = await axios.get('http://localhost:3000/api/activity/logs?limit=5', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const activityResponse = await api.get('/api/activity/logs?limit=5');
         setRecentActivity(activityResponse.data.logs || []);
       }
     } catch (error) {
