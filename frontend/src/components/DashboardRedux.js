@@ -17,17 +17,22 @@ const DashboardRedux = () => {
 
   const fetchDashboardData = useCallback(async () => {
     try {
+      console.log('🔍 Fetching dashboard data...');
       // Fetch user stats
       const statsResponse = await api.get('/api/users/stats');
+      console.log('📊 Stats response:', statsResponse.data);
       setStats(statsResponse.data);
 
       // Fetch recent activity if admin
       if (user?.role === 'admin') {
+        console.log('📋 Fetching activity logs...');
         const activityResponse = await api.get('/api/activity/logs?limit=5');
+        console.log('📋 Activity response:', activityResponse.data);
         setRecentActivity(activityResponse.data.logs || []);
       }
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      console.error('❌ Dashboard error:', error);
+      console.error('❌ Error details:', error.response?.data || error.message);
     } finally {
       setLoading(false);
     }
