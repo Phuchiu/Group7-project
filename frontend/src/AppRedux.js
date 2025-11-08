@@ -17,14 +17,18 @@ import './styles.css';
 
 const AppContent = () => {
   const dispatch = useDispatch();
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token') || localStorage.getItem('token');
     if (token) {
       dispatch(verifyToken());
     }
   }, [dispatch]);
+
+  const handleGoBack = () => {
+    window.history.back();
+  };
 
   return (
     <Router>
@@ -113,7 +117,7 @@ const AppContent = () => {
                       Bạn không có quyền truy cập trang này.
                     </div>
                     <button 
-                      onClick={() => window.history.back()}
+                      onClick={handleGoBack}
                       className="link-btn"
                     >
                       Quay lại

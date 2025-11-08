@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
 
 const ActivityLogs = () => {
@@ -16,12 +16,7 @@ const ActivityLogs = () => {
   });
   const [pagination, setPagination] = useState({});
 
-  useEffect(() => {
-    fetchLogs();
-    fetchStats();
-  }, [filters.page, filters.limit, filters.action, filters.userId, filters.startDate, filters.endDate]);
-
-  const fetchLogs = async () => {
+  const fetchLogs = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -37,16 +32,21 @@ const ActivityLogs = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       const response = await api.get('/api/activity/stats?days=7');
       setStats(response.data.stats);
     } catch (error) {
       console.error('Error fetching stats:', error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchLogs();
+    fetchStats();
+  }, [fetchLogs, fetchStats]);
 
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({

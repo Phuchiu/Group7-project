@@ -6,7 +6,10 @@ const { logActivity, logFailedActivity } = require('../middleware/activityLogger
 const { sendResetPasswordEmail } = require('../services/emailService');
 
 const generateAccessToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET || 'secret', { expiresIn: '5m' });
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET not configured');
+  }
+  return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '15m' });
 };
 
 const generateRefreshToken = async (userId) => {

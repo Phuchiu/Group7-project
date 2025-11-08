@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import ForgotPassword from './ForgotPassword';
-import ResetPassword from './ResetPassword';
 import EmailTest from './EmailTest';
 
 const ForgotPasswordDemo = () => {

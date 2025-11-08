@@ -3,6 +3,37 @@ import { useDispatch } from 'react-redux';
 import { updateAvatar } from '../store/authSlice';
 import api from '../services/api';
 
+// Sanitize image source to prevent XSS
+const sanitizeImageSrc = (src) => {
+  if (!src) return '';
+  
+  // If it's a data URL (base64), return as is
+  if (src.startsWith('data:image/')) {
+    return src;
+  }
+  
+  // If it's already a full URL, validate it
+  if (src.startsWith('http://') || src.startsWith('https://')) {
+    try {
+      const url = new URL(src);
+      // Only allow localhost for development
+      if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+        return src;
+      }
+    } catch (e) {
+      return '';
+    }
+    return '';
+  }
+  
+  // If it's a relative path, prepend the base URL
+  if (src.startsWith('/uploads/')) {
+    return `http://localhost:3000${src}`;
+  }
+  
+  return '';
+};
+
 const AvatarUpload = ({ currentAvatar, onAvatarUpdate }) => {
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
@@ -122,7 +153,7 @@ const AvatarUpload = ({ currentAvatar, onAvatarUpdate }) => {
         <div className="avatar-preview" onClick={triggerFileInput}>
           {preview ? (
             <img 
-              src={preview.startsWith('http') ? preview : `http://localhost:3000${preview}`} 
+              src={sanitizeImageSrc(preview)} 
               alt="Avatar" 
               className="avatar-image"
               onError={(e) => {

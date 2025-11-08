@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -15,11 +15,7 @@ const DashboardRedux = () => {
   const [recentActivity, setRecentActivity] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       // Fetch user stats
       const statsResponse = await axios.get('http://localhost:3000/api/users/stats', {
@@ -39,7 +35,11 @@ const DashboardRedux = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, user?.role]);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   if (loading) return <div className="loading">Đang tải dashboard...</div>;
 

@@ -3,17 +3,35 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:3000/api';
 
+// Secure token storage
+const TokenStorage = {
+  setTokens: (accessToken, refreshToken) => {
+    sessionStorage.setItem('token', accessToken);
+    sessionStorage.setItem('refreshToken', refreshToken);
+  },
+  getToken: () => sessionStorage.getItem('token'),
+  getRefreshToken: () => sessionStorage.getItem('refreshToken'),
+  clearTokens: () => {
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('refreshToken');
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+  }
+};
+
 // Async thunks
 export const loginUser = createAsyncThunk(
   'auth/login',
   async ({ email, password }, { rejectWithValue }) => {
     try {
+      if (!email || !password) {
+        throw new Error('Email and password are required');
+      }
       const response = await axios.post(`${API_URL}/auth/login`, { email, password });
-      localStorage.setItem('token', response.data.accessToken);
-      localStorage.setItem('refreshToken', response.data.refreshToken);
+      TokenStorage.setTokens(response.data.accessToken, response.data.refreshToken);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data.message);
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
@@ -22,7 +40,7 @@ export const verifyToken = createAsyncThunk(
   'auth/verify',
   async (_, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = TokenStorage.getToken();
       if (!token) throw new Error('No token');
       
       const response = await axios.get(`${API_URL}/auth/verify`, {
@@ -30,8 +48,7 @@ export const verifyToken = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('refreshToken');
+      TokenStorage.clearTokens();
       return rejectWithValue('Token invalid');
     }
   }
@@ -41,16 +58,14 @@ export const logoutUser = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
-      const refreshToken = localStorage.getItem('refreshToken');
+      const refreshToken = TokenStorage.getRefreshToken();
       if (refreshToken) {
         await axios.post(`${API_URL}/auth/logout`, { refreshToken });
       }
-      localStorage.removeItem('token');
-      localStorage.removeItem('refreshToken');
+      TokenStorage.clearTokens();
       return {};
     } catch (error) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('refreshToken');
+      TokenStorage.clearTokens();
       return {};
     }
   }
@@ -60,10 +75,10 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: {
     user: null,
-    token: localStorage.getItem('token'),
+    token: TokenStorage.getToken(),
     isLoading: false,
     error: null,
-    isAuthenticated: false,
+    isAuthenticated: !!TokenStorage.getToken(),
   },
   reducers: {
     clearError: (state) => {

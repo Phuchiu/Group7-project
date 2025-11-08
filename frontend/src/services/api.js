@@ -8,15 +8,27 @@ const api = axios.create({
   timeout: 10000
 });
 
-// Token management
+// Secure token management - use sessionStorage for better security
 const TokenManager = {
-  getAccessToken: () => localStorage.getItem('accessToken'),
-  getRefreshToken: () => localStorage.getItem('refreshToken'),
+  getAccessToken: () => {
+    // Try sessionStorage first, fallback to localStorage for compatibility
+    return sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken');
+  },
+  getRefreshToken: () => {
+    return sessionStorage.getItem('refreshToken') || localStorage.getItem('refreshToken');
+  },
   setTokens: (accessToken, refreshToken) => {
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', refreshToken);
+    // Use sessionStorage for better security (cleared when tab closes)
+    sessionStorage.setItem('accessToken', accessToken);
+    sessionStorage.setItem('refreshToken', refreshToken);
+    // Clear any old localStorage tokens
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
   },
   clearTokens: () => {
+    sessionStorage.removeItem('accessToken');
+    sessionStorage.removeItem('refreshToken');
+    sessionStorage.removeItem('user');
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');

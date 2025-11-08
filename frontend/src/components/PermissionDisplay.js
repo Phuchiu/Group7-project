@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRole } from '../contexts/RoleContext';
 import api from '../services/api';
 
 const PermissionDisplay = () => {
-  const { permissions, hasRole } = useRole();
+  const { permissions } = useRole();
   const [testResults, setTestResults] = useState([]);
   const [testing, setTesting] = useState(false);
 

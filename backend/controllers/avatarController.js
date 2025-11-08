@@ -29,8 +29,12 @@ const uploadAvatar = async (req, res) => {
     // Delete old avatar if exists
     const user = await User.findById(userId);
     if (user.avatar) {
-      const oldAvatarPath = path.join(__dirname, '..', user.avatar);
-      if (fs.existsSync(oldAvatarPath)) {
+      // Validate avatar path to prevent path traversal
+      const avatarFileName = path.basename(user.avatar);
+      const oldAvatarPath = path.resolve(uploadsDir, avatarFileName);
+      
+      // Ensure the path is within uploads directory
+      if (oldAvatarPath.startsWith(path.resolve(uploadsDir)) && fs.existsSync(oldAvatarPath)) {
         try {
           fs.unlinkSync(oldAvatarPath);
         } catch (err) {
@@ -67,10 +71,14 @@ const deleteAvatar = async (req, res) => {
     const userId = req.user._id;
     const user = await User.findById(userId);
 
-    // Delete file from uploads directory
+    // Delete file from uploads directory with path validation
     if (user.avatar) {
-      const filePath = path.join(__dirname, '..', user.avatar);
-      if (fs.existsSync(filePath)) {
+      const uploadsDir = path.resolve(__dirname, '../uploads');
+      const avatarFileName = path.basename(user.avatar);
+      const filePath = path.resolve(uploadsDir, avatarFileName);
+      
+      // Ensure the path is within uploads directory to prevent path traversal
+      if (filePath.startsWith(uploadsDir) && fs.existsSync(filePath)) {
         try {
           fs.unlinkSync(filePath);
         } catch (err) {

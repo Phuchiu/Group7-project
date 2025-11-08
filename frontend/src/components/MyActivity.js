@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
 
 const MyActivity = () => {
@@ -8,11 +8,7 @@ const MyActivity = () => {
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({});
 
-  useEffect(() => {
-    fetchMyLogs();
-  }, [page]);
-
-  const fetchMyLogs = async () => {
+  const fetchMyLogs = useCallback(async () => {
     try {
       setLoading(true);
       const response = await api.get(`/api/activity/my-logs?page=${page}&limit=10`);
@@ -23,7 +19,11 @@ const MyActivity = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page]);
+
+  useEffect(() => {
+    fetchMyLogs();
+  }, [fetchMyLogs]);
 
   const getActionIcon = (action) => {
     const icons = {
