@@ -4,6 +4,8 @@ import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store } from './store/store';
 import { verifyToken } from './store/authSlice';
 import LoginRedux from './components/LoginRedux';
+import SignupRedux from './components/SignupRedux';
+import ForgotPassword from './components/ForgotPassword';
 import ProfileRedux from './components/ProfileRedux';
 import AdminRedux from './components/AdminRedux';
 import DashboardRedux from './components/DashboardRedux';
@@ -13,6 +15,7 @@ import NavigationRedux from './components/NavigationRedux';
 import ActivityLogs from './components/ActivityLogs';
 import RoleManagement from './components/RoleManagement';
 import ProtectedRoute from './components/ProtectedRoute';
+import AuthDebug from './components/AuthDebug';
 import './styles.css';
 
 const AppContent = () => {
@@ -33,6 +36,7 @@ const AppContent = () => {
   return (
     <Router>
       <div className="app">
+        <AuthDebug />
         {isAuthenticated && <NavigationRedux />}
 
         <main className="main-content">
@@ -41,6 +45,21 @@ const AppContent = () => {
               path="/login" 
               element={
                 isAuthenticated ? <Navigate to="/dashboard" /> : <LoginRedux />
+              } 
+            />
+            
+            <Route 
+              path="/signup" 
+              element={
+                isAuthenticated ? <Navigate to="/dashboard" /> : <SignupRedux />
+              } 
+            />
+            
+            <Route 
+              path="/forgot-password" 
+              element={
+                isAuthenticated ? <Navigate to="/dashboard" /> : 
+                <ForgotPassword onBack={() => window.history.back()} />
               } 
             />
             
@@ -74,7 +93,7 @@ const AppContent = () => {
             <Route 
               path="/roles" 
               element={
-                <ProtectedRoute requiredRole="admin">
+                <ProtectedRoute requiredRoles={["admin", "moderator"]}>
                   <RoleManagement />
                 </ProtectedRoute>
               } 
@@ -92,7 +111,7 @@ const AppContent = () => {
             <Route 
               path="/logs" 
               element={
-                <ProtectedRoute requiredRole="admin">
+                <ProtectedRoute requiredRoles={["admin", "moderator"]}>
                   <ActivityLogs />
                 </ProtectedRoute>
               } 

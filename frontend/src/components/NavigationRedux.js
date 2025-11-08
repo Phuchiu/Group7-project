@@ -56,21 +56,21 @@ const NavigationRedux = () => {
         )}
         
         {user?.role === 'admin' && (
-          <>
-            <button 
-              onClick={() => navigate('/admin')}
-              className={`nav-btn ${isActive('/admin') ? 'active' : ''}`}
-            >
-              ⚙️ Admin
-            </button>
-            
-            <button 
-              onClick={() => navigate('/logs')}
-              className={`nav-btn ${isActive('/logs') ? 'active' : ''}`}
-            >
-              📋 Logs
-            </button>
-          </>
+          <button 
+            onClick={() => navigate('/admin')}
+            className={`nav-btn ${isActive('/admin') ? 'active' : ''}`}
+          >
+            ⚙️ Admin
+          </button>
+        )}
+        
+        {(user?.role === 'admin' || user?.role === 'moderator') && (
+          <button 
+            onClick={() => navigate('/logs')}
+            className={`nav-btn ${isActive('/logs') ? 'active' : ''}`}
+          >
+            📋 Logs
+          </button>
         )}
         
         <button 

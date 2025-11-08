@@ -76,7 +76,7 @@ const authSlice = createSlice({
   initialState: {
     user: null,
     token: TokenStorage.getToken(),
-    isLoading: false,
+    isLoading: !!TokenStorage.getToken(), // Loading if we have a token but no user
     error: null,
     isAuthenticated: !!TokenStorage.getToken(),
   },
@@ -109,11 +109,16 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
       })
       // Verify
+      .addCase(verifyToken.pending, (state) => {
+        state.isLoading = true;
+      })
       .addCase(verifyToken.fulfilled, (state, action) => {
+        state.isLoading = false;
         state.user = action.payload.user;
         state.isAuthenticated = true;
       })
       .addCase(verifyToken.rejected, (state) => {
+        state.isLoading = false;
         state.user = null;
         state.token = null;
         state.isAuthenticated = false;

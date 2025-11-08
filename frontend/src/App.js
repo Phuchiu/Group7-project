@@ -16,9 +16,54 @@ import PermissionDisplay from './components/PermissionDisplay';
 import ActivityLogs from './components/ActivityLogs';
 import RateLimitDemo from './components/RateLimitDemo';
 import MyActivity from './components/MyActivity';
-import { RoleProvider } from './contexts/RoleContext';
+import { RoleProvider, useRole } from './contexts/RoleContext';
 import { TokenManager } from './services/api';
 import './styles.css';
+
+// Protected content component
+const MainContent = ({ currentView, user, setUser }) => {
+  const { hasRole, hasAnyRole } = useRole();
+
+  // Access denied component
+  const AccessDenied = () => (
+    <div className="access-denied">
+      <h2>🚫 Không có quyền</h2>
+      <p>Bạn không có quyền truy cập trang này.</p>
+    </div>
+  );
+
+  switch (currentView) {
+    case 'userlist':
+      return <UserList />;
+    
+    case 'profile':
+      return (
+        <>
+          <Profile user={user} setUser={setUser} />
+          <MyActivity />
+          <PermissionDisplay />
+        </>
+      );
+    
+    case 'admin':
+      return hasAnyRole(['admin', 'moderator']) ? <AdminPanel /> : <AccessDenied />;
+    
+    case 'roles':
+      return hasRole('admin') ? <RoleManagement /> : <AccessDenied />;
+    
+    case 'moderate':
+      return hasRole('moderator') ? <ModeratorPanel /> : <AccessDenied />;
+    
+    case 'logs':
+      return hasRole('admin') ? <ActivityLogs /> : <AccessDenied />;
+    
+    case 'ratetest':
+      return hasRole('admin') ? <RateLimitDemo /> : <AccessDenied />;
+    
+    default:
+      return <UserList />;
+  }
+};
 
 function App() {
   const [user, setUser] = useState(null);
@@ -123,19 +168,11 @@ function App() {
         </nav>
 
         <main className="main-content">
-          {currentView === 'userlist' && <UserList />}
-          {currentView === 'profile' && (
-            <>
-              <Profile user={user} setUser={setUser} />
-              <MyActivity />
-              <PermissionDisplay />
-            </>
-          )}
-          {currentView === 'admin' && <AdminPanel />}
-          {currentView === 'roles' && <RoleManagement />}
-          {currentView === 'moderate' && <ModeratorPanel />}
-          {currentView === 'logs' && <ActivityLogs />}
-          {currentView === 'ratetest' && <RateLimitDemo />}
+          <MainContent 
+            currentView={currentView} 
+            user={user} 
+            setUser={setUser}
+          />
         </main>
       </div>
     </RoleProvider>

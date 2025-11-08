@@ -12,9 +12,9 @@ const router = express.Router();
 // Apply general rate limiting
 router.use(generalLimiter);
 
-// Admin routes
-router.get('/logs', auth, checkRole('admin'), getUserActivityLogs);
-router.get('/stats', auth, checkRole('admin'), getActivityStats);
+// Admin and Moderator routes
+router.get('/logs', auth, checkRole('admin', 'moderator'), getUserActivityLogs);
+router.get('/stats', auth, checkRole('admin', 'moderator'), getActivityStats);
 
 // User routes
 router.get('/my-logs', auth, getMyActivityLogs);

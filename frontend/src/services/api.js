@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = 'http://localhost:3000';
 
 // Create axios instance
 const api = axios.create({
@@ -11,25 +11,25 @@ const api = axios.create({
 // Secure token management - use sessionStorage for better security
 const TokenManager = {
   getAccessToken: () => {
-    // Try sessionStorage first, fallback to localStorage for compatibility
-    return sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken');
+    // Use same key as auth slice
+    return sessionStorage.getItem('token') || localStorage.getItem('token');
   },
   getRefreshToken: () => {
     return sessionStorage.getItem('refreshToken') || localStorage.getItem('refreshToken');
   },
   setTokens: (accessToken, refreshToken) => {
-    // Use sessionStorage for better security (cleared when tab closes)
-    sessionStorage.setItem('accessToken', accessToken);
+    // Use same key as auth slice
+    sessionStorage.setItem('token', accessToken);
     sessionStorage.setItem('refreshToken', refreshToken);
     // Clear any old localStorage tokens
-    localStorage.removeItem('accessToken');
+    localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
   },
   clearTokens: () => {
-    sessionStorage.removeItem('accessToken');
+    sessionStorage.removeItem('token');
     sessionStorage.removeItem('refreshToken');
     sessionStorage.removeItem('user');
-    localStorage.removeItem('accessToken');
+    localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
   }

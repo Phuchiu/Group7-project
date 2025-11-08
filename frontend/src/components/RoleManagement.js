@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import api from '../services/api';
 
 const RoleManagement = () => {
+  const { user: currentUser } = useSelector((state) => state.auth);
   const [users, setUsers] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -54,7 +56,13 @@ const RoleManagement = () => {
 
   return (
     <div className="role-management">
-      <h2>🔐 Role Management (Admin Only)</h2>
+      <h2>🔐 Role Management</h2>
+      <p className="role-info">
+        {currentUser?.role === 'admin' ? 
+          'Quản lý role của tất cả người dùng' : 
+          'Xem thông tin role (Moderator)'
+        }
+      </p>
       
       {error && <div className="error">{error}</div>}
       {success && <div className="success">{success}</div>}
@@ -103,32 +111,36 @@ const RoleManagement = () => {
                   </span>
                 </td>
                 <td>
-                  <div className="role-actions">
-                    {user.role !== 'user' && (
-                      <button 
-                        onClick={() => updateUserRole(user._id, 'user')}
-                        className="role-btn user"
-                      >
-                        → User
-                      </button>
-                    )}
-                    {user.role !== 'moderator' && (
-                      <button 
-                        onClick={() => updateUserRole(user._id, 'moderator')}
-                        className="role-btn moderator"
-                      >
-                        → Moderator
-                      </button>
-                    )}
-                    {user.role !== 'admin' && (
-                      <button 
-                        onClick={() => updateUserRole(user._id, 'admin')}
-                        className="role-btn admin"
-                      >
-                        → Admin
-                      </button>
-                    )}
-                  </div>
+                  {currentUser?.role === 'admin' ? (
+                    <div className="role-actions">
+                      {user.role !== 'user' && (
+                        <button 
+                          onClick={() => updateUserRole(user._id, 'user')}
+                          className="role-btn user"
+                        >
+                          → User
+                        </button>
+                      )}
+                      {user.role !== 'moderator' && (
+                        <button 
+                          onClick={() => updateUserRole(user._id, 'moderator')}
+                          className="role-btn moderator"
+                        >
+                          → Moderator
+                        </button>
+                      )}
+                      {user.role !== 'admin' && (
+                        <button 
+                          onClick={() => updateUserRole(user._id, 'admin')}
+                          className="role-btn admin"
+                        >
+                          → Admin
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="no-permission">Chỉ xem</span>
+                  )}
                 </td>
               </tr>
             ))}

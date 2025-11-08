@@ -1696,6 +1696,20 @@ button:disabled {
   opacity: 0.9;
 }
 
+.role-info {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.no-permission {
+  color: #999;
+  font-style: italic;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
 /* Moderator Panel */
 .moderator-panel {
   background: rgba(255, 255, 255, 0.95);

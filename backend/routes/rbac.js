@@ -12,8 +12,8 @@ const router = express.Router();
 // Get current user permissions
 router.get('/permissions', auth, getUserPermissions);
 
-// Role statistics (Admin only)
-router.get('/stats', auth, checkRole('admin'), getRoleStats);
+// Role statistics (Admin and Moderator)
+router.get('/stats', auth, checkRole('admin', 'moderator'), getRoleStats);
 
 // Update user role (Admin only)
 router.put('/users/:userId/role', auth, checkRole('admin'), updateUserRole);
