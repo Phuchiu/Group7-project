@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 
 const DashboardRedux = () => {
-  const { user, token } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalUsers: 0,

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import api from '../services/api';
 
 const UsersRedux = () => {
-  const { user, token } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
