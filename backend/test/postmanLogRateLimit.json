@@ -20,8 +20,8 @@
           "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"user123\"\n}"
         },
         "url": {
-          "raw": "{{baseUrl}}/api/auth/login",
-          "host": ["{{baseUrl}}"],
+          "raw": "http://localhost:3000/api/auth/login",
+          "host": ["http://localhost:3000"],
           "path": ["api", "auth", "login"]
         },
         "description": "Should log successful login activity"
@@ -42,8 +42,8 @@
           "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"wrongpassword\"\n}"
         },
         "url": {
-          "raw": "{{baseUrl}}/api/auth/login",
-          "host": ["{{baseUrl}}"],
+          "raw": "http://localhost:3000/api/auth/login",
+          "host": ["http://localhost:3000"],
           "path": ["api", "auth", "login"]
         },
         "description": "Should log failed login attempt"
@@ -64,8 +64,8 @@
           "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"wrongpassword\"\n}"
         },
         "url": {
-          "raw": "{{baseUrl}}/api/auth/login",
-          "host": ["{{baseUrl}}"],
+          "raw": "http://localhost:3000/api/auth/login",
+          "host": ["http://localhost:3000"],
           "path": ["api", "auth", "login"]
         }
       }
@@ -85,8 +85,8 @@
           "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"wrongpassword\"\n}"
         },
         "url": {
-          "raw": "{{baseUrl}}/api/auth/login",
-          "host": ["{{baseUrl}}"],
+          "raw": "http://localhost:3000/api/auth/login",
+          "host": ["http://localhost:3000"],
           "path": ["api", "auth", "login"]
         }
       }
@@ -106,8 +106,8 @@
           "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"wrongpassword\"\n}"
         },
         "url": {
-          "raw": "{{baseUrl}}/api/auth/login",
-          "host": ["{{baseUrl}}"],
+          "raw": "http://localhost:3000/api/auth/login",
+          "host": ["http://localhost:3000"],
           "path": ["api", "auth", "login"]
         }
       }
@@ -127,8 +127,8 @@
           "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"wrongpassword\"\n}"
         },
         "url": {
-          "raw": "{{baseUrl}}/api/auth/login",
-          "host": ["{{baseUrl}}"],
+          "raw": "http://localhost:3000/api/auth/login",
+          "host": ["http://localhost:3000"],
           "path": ["api", "auth", "login"]
         },
         "description": "Should return rate limit error"
@@ -145,8 +145,8 @@
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/api/admin/logs/user/{{userId}}",
-          "host": ["{{baseUrl}}"],
+          "raw": "http://localhost:3000/api/admin/logs/user/{{userId}}",
+          "host": ["http://localhost:3000"],
           "path": ["api", "admin", "logs", "user", "{{userId}}"]
         },
         "description": "Get activity logs for specific user"
@@ -163,8 +163,8 @@
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/api/admin/logs?limit=50&skip=0",
-          "host": ["{{baseUrl}}"],
+          "raw": "http://localhost:3000/api/admin/logs?limit=50&skip=0",
+          "host": ["http://localhost:3000"],
           "path": ["api", "admin", "logs"],
           "query": [
             {
@@ -191,8 +191,8 @@
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/api/admin/logs/action/failed_login",
-          "host": ["{{baseUrl}}"],
+          "raw": "http://localhost:3000/api/admin/logs/action/failed_login",
+          "host": ["http://localhost:3000"],
           "path": ["api", "admin", "logs", "action", "failed_login"]
         },
         "description": "Get all failed login attempts"
@@ -209,8 +209,8 @@
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/api/admin/logs/stats?hours=24",
-          "host": ["{{baseUrl}}"],
+          "raw": "http://localhost:3000/api/admin/logs/stats?hours=24",
+          "host": ["http://localhost:3000"],
           "path": ["api", "admin", "logs", "stats"],
           "query": [
             {
@@ -241,8 +241,8 @@
           "raw": "{\n  \"name\": \"Updated Name\"\n}"
         },
         "url": {
-          "raw": "{{baseUrl}}/api/profile",
-          "host": ["{{baseUrl}}"],
+          "raw": "http://localhost:3000/api/profile",
+          "host": ["http://localhost:3000"],
           "path": ["api", "profile"]
         },
         "description": "Should log profile_update activity"
@@ -259,8 +259,8 @@
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/api/auth/logout",
-          "host": ["{{baseUrl}}"],
+          "raw": "http://localhost:3000/api/auth/logout",
+          "host": ["http://localhost:3000"],
           "path": ["api", "auth", "logout"]
         },
         "description": "Should log logout activity"
@@ -268,10 +268,6 @@
     }
   ],
   "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:3000"
-    },
     {
       "key": "userToken",
       "value": ""
