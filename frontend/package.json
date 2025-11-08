@@ -4,9 +4,11 @@
   "description": "Frontend cho hệ thống quản lý người dùng với Authentication",
   "private": true,
   "dependencies": {
+    "@reduxjs/toolkit": "^2.10.1",
     "axios": "^1.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^6.30.1",
     "react-scripts": "5.0.1"
   },

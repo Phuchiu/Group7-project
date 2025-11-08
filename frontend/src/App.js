@@ -1,8 +1,9 @@
-// src/App.js - VERSION TEST
+// src/App.js - Redux Version
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-// Import từng component một để dễ debug
+// Import components
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
@@ -14,30 +15,52 @@ import AdminLogs from './pages/AdminLogs';
 
 import './styles/App.css';
 
-// Protected Route Component
+// Protected Route Component - Dùng Redux
 const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated } = useSelector(state => state.auth);
   const token = localStorage.getItem('token');
   
-  if (!token) {
+  console.log('🔐 ProtectedRoute check:', {
+    isAuthenticated,
+    hasToken: !!token,
+    timestamp: new Date().toLocaleTimeString()
+  });
+  
+  if (!isAuthenticated && !token) {
+    console.log('❌ Not authenticated → Redirect to /login');
+    alert('⚠️ BẠN CHƯA ĐĂNG NHẬP!\n\nVui lòng đăng nhập để truy cập trang này.');
     return <Navigate to="/login" replace />;
   }
   
+  console.log('✅ Authenticated → Allow access');
   return children;
 };
 
-// Admin Route Component
+// Admin Route Component - Dùng Redux
 const AdminRoute = ({ children }) => {
+  const { isAuthenticated, user } = useSelector(state => state.auth);
   const token = localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
   
-  if (!token) {
+  console.log('👑 AdminRoute check:', {
+    isAuthenticated,
+    hasToken: !!token,
+    userRole: user?.role,
+    timestamp: new Date().toLocaleTimeString()
+  });
+  
+  if (!isAuthenticated && !token) {
+    console.log('❌ Not authenticated → Redirect to /login');
+    alert('⚠️ BẠN CHƯA ĐĂNG NHẬP!\n\nVui lòng đăng nhập để truy cập trang này.');
     return <Navigate to="/login" replace />;
   }
   
-  if (user.role !== 'admin') {
+  if (user?.role !== 'admin') {
+    console.log('🚫 Not admin (role: ' + user?.role + ') → Redirect to /profile');
+    alert('⚠️ KHÔNG CÓ QUYỀN TRUY CẬP!\n\nChỉ Admin mới có thể truy cập trang này.');
     return <Navigate to="/profile" replace />;
   }
   
+  console.log('✅ Admin authenticated → Allow access');
   return children;
 };
 
