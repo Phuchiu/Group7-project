@@ -85,7 +85,13 @@ const ForgotPassword = ({ onBack }) => {
              <p className="forgot-password-description">
               Vui lòng kiểm tra email <strong>{email}</strong> và nhập mã 6 số vào bên dưới.
               <br/>
-              <small>(<a href="#" onClick={(e) => { e.preventDefault(); setStep(1); }}>Nhập lại email khác</a>)</small>
+              <small>(<button
+                type="button"
+                onClick={() => setStep(1)}
+                style={{ background: 'none', border: 'none', color: '#667eea', textDecoration: 'underline', cursor: 'pointer', padding: 0, fontSize: 'inherit', fontFamily: 'inherit' }}
+              >
+                Nhập lại email khác
+              </button>)</small>
             </p>
             <form onSubmit={handleResetPassword}>
               <div className="form-group">
