@@ -1,13 +1,17 @@
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-  port: process.env.EMAIL_PORT || 465,
-  secure: true, // Always use SSL for port 465
+  host: 'smtp.gmail.com',
+  port: 465, // Cổng SSL
+  secure: true, // BẮT BUỘC phải là true khi dùng port 465
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
-  }
+  },
+  // Tăng thời gian chờ lên để tránh timeout quá sớm
+  connectionTimeout: 10000, // 10 giây
+  greetingTimeout: 10000,
+  socketTimeout: 10000
 });
 
 const sendResetPasswordEmail = async (email, resetToken) => {
