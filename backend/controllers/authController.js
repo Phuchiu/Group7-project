@@ -192,7 +192,8 @@ const forgotPassword = async (req, res) => {
     
     res.json({ message: 'Email đặt lại mật khẩu đã được gửi' });
   } catch (error) {
-    res.status(500).json({ message: 'Lỗi server', error: error.message });
+    console.error('LỖI GỬI MAIL CHI TIẾT:', error);
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
