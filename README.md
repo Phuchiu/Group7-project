@@ -41,7 +41,7 @@ Dự án được thực hiện bởi nhóm 3 thành viên với sự phân chia
   - Tích hợp API vào giao diện, xử lý lỗi và hiển thị thông báo thân thiện.
   - Phát triển các component UI tái sử dụng (AvatarUpload, UserTable...).
 
-### 👨💻 Phạm Thái An) - Database & DevOps Engineer
+### 👨💻 Phạm Thái An - Database & DevOps Engineer
 
 **Trách nhiệm chính:** Thiết kế cơ sở dữ liệu, triển khai và đảm bảo vận hành hệ thống.
 
