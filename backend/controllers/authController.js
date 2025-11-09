@@ -206,29 +206,43 @@ const forgotPassword = async (req, res) => {
 const resetPassword = async (req, res) => {
   try {
     const { email, code, password } = req.body;
-    
-    if (!email || !code || !password) {
-      return res.status(400).json({ message: 'Vui lòng nhập đủ Email, Mã xác nhận và Mật khẩu mới' });
-    }
-    
-    // Compare code directly (no hashing)
-    const user = await User.findOne({
-      email: email,
-      resetPasswordToken: code,
-      resetPasswordExpires: { $gt: Date.now() }
-    });
-    
+
+    console.log('👉 [DEBUG] Frontend gửi lên:', { email, code });
+
+    // 1. Tìm user bằng email trước (bỏ qua check token vội)
+    const user = await User.findOne({ email });
+
     if (!user) {
-      return res.status(400).json({ message: 'Mã xác nhận không đúng hoặc đã hết hạn' });
+        console.log('❌ [DEBUG] Không tìm thấy user có email này');
+        return res.status(400).json({ message: 'Email không tồn tại' });
     }
-    
+
+    // 2. In ra thông tin đang lưu trong DB để so sánh
+    console.log('👉 [DEBUG] Dữ liệu trong DB:', {
+        tokenInDB: user.resetPasswordToken,
+        expireInDB: user.resetPasswordExpires,
+        currentTime: Date.now(),
+        isMatch: user.resetPasswordToken === code,
+        isStillValid: user.resetPasswordExpires > Date.now()
+    });
+
+    // 3. Kiểm tra thủ công
+    if (user.resetPasswordToken !== code) {
+         return res.status(400).json({ message: 'Mã xác nhận không khớp!' });
+    }
+    if (user.resetPasswordExpires <= Date.now()) {
+         return res.status(400).json({ message: 'Mã xác nhận đã hết hạn!' });
+    }
+
+    // 4. Nếu mọi thứ OK thì lưu mật khẩu mới
     user.password = password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     await user.save();
-    
-    res.json({ message: 'Đặt lại mật khẩu thành công! Vui lòng đăng nhập.' });
+
+    res.json({ message: 'Đặt lại mật khẩu thành công!' });
   } catch (error) {
+    console.error('LỖI RESET PASSWORD:', error);
     res.status(500).json({ message: 'Lỗi server', error: error.message });
   }
 };
