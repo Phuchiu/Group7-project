@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const ForgotPassword = ({ onBack }) => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -100,6 +102,24 @@ const ForgotPassword = ({ onBack }) => {
             <div className="email-actions">
               <button type="button" className="resend-btn" onClick={handleResendEmail}>
                 Gửi lại email
+              </button>
+              
+              <button
+                type="button"
+                onClick={() => navigate('/reset-password', { state: { email: email } })}
+                className="enter-code-btn"
+                style={{ 
+                  marginTop: '10px', 
+                  padding: '10px 20px', 
+                  background: '#28a745', 
+                  color: 'white', 
+                  border: 'none', 
+                  borderRadius: '5px', 
+                  cursor: 'pointer', 
+                  width: '100%' 
+                }}
+              >
+                👉 Nhập mã xác nhận ngay
               </button>
             </div>
           </div>
