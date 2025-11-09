@@ -1,654 +1,192 @@
-# 🚀 Group7-project - Advanced User Management System
+Dưới đây là bản cập nhật **README.md** với nhiều nội dung tiếng Việt hơn và bổ sung phần phân công công việc cho 3 sinh viên (SV1 - Backend, SV2 - Frontend, SV3 - Database/DevOps), giữ nguyên các phần kỹ thuật bằng tiếng Anh để đảm bảo tính chuyên nghiệp.
 
-## 📋 Mô tả dự án
-Ứng dụng quản lý người dùng full-stack nâng cao với đầy đủ tính năng bảo mật, phân quyền và quản lý hiện đại. Sử dụng Node.js, React Redux và MongoDB với các tính năng:
+-----
 
-- ✅ **Authentication & Authorization** - JWT + Refresh Token
-- ✅ **Role-Based Access Control (RBAC)** - Admin, Moderator, User
-- ✅ **Avatar Upload** - File upload với validation
-- ✅ **Password Reset** - Email verification
-- ✅ **Activity Logging** - Theo dõi hoạt động người dùng
-- ✅ **Rate Limiting** - Bảo vệ API khỏi spam
-- ✅ **Real-time Dashboard** - Thống kê và quản lý
-- ✅ **Security Features** - Advanced security middleware
-- ✅ **Debug Tools** - Development debugging components
+# 🚀 Group7-project - Hệ Thống Quản Lý Người Dùng Nâng Cao (Advanced User Management System)
 
-## 🛠️ Công nghệ sử dụng
+## 📋 Giới thiệu Dự án
 
-### Backend
-- **Node.js** - Runtime environment
-- **Express.js** - Web framework
-- **MongoDB** - NoSQL database
-- **Mongoose** - MongoDB object modeling
-- **JWT** - JSON Web Tokens
-- **Bcrypt** - Password hashing
-- **Multer** - File upload
-- **Sharp** - Image processing
-- **Nodemailer** - Email service
-- **Express-rate-limit** - Rate limiting
-- **CORS** - Cross-origin resource sharing
-- **Cloudinary** - Image storage (optional)
-- **Express-session** - Session management
+Đây là một ứng dụng web full-stack hiện đại, tập trung vào quản lý người dùng với các tính năng bảo mật nâng cao, phân quyền chi tiết và trải nghiệm người dùng tối ưu. Dự án được xây dựng trên nền tảng MERN Stack (MongoDB, Express.js, React Redux, Node.js).
 
-### Frontend
-- **React.js** - UI library
-- **Redux Toolkit** - State management
-- **React Router** - Navigation
-- **Axios** - HTTP client
-- **CSS3** - Modern styling with gradients
-- **ESLint** - Code quality
+**Các tính năng nổi bật:**
+
+  - ✅ **Xác thực & Phân quyền (Authentication & Authorization):** Sử dụng JWT (Access Token + Refresh Token) để bảo mật phiên đăng nhập.
+  - ✅ **Phân quyền dựa trên vai trò (RBAC - Role-Based Access Control):** Hệ thống phân cấp rõ ràng gồm Admin (Quản trị viên), Moderator (Điều hành viên), và User (Người dùng thường).
+  - ✅ **Quản lý Ảnh đại diện (Avatar Upload):** Cho phép người dùng tải lên ảnh đại diện với cơ chế kiểm tra định dạng và kích thước file chặt chẽ.
+  - ✅ **Khôi phục mật khẩu (Password Reset):** Tích hợp gửi email xác thực để người dùng đặt lại mật khẩu khi quên.
+  - ✅ **Nhật ký hoạt động (Activity Logging):** Ghi lại lịch sử thao tác của người dùng để phục vụ công tác quản trị và bảo mật.
+  - ✅ **Giới hạn truy cập (Rate Limiting):** Bảo vệ hệ thống API khỏi các cuộc tấn công spam hoặc dò mật khẩu (brute-force).
+  - ✅ **Bảng điều khiển trực quan (Real-time Dashboard):** Cung cấp cái nhìn tổng quan và thống kê số liệu theo thời gian thực.
+  - ✅ **Bảo mật nâng cao (Advanced Security):** Tích hợp nhiều lớp bảo mật như mã hóa mật khẩu (Bcrypt), CORS, và các headers bảo mật.
+
+## 👥 Phân công Thành viên (Team Roles)
+
+Dự án được thực hiện bởi nhóm 3 thành viên với sự phân chia trách nhiệm rõ ràng:
+
+### 👨💻 Đỗ Thành Nhân Tài - Backend Developer
+
+**Trách nhiệm chính:** Xây dựng Server, API và các logic xử lý nghiệp vụ.
+
+  - Thiết kế và triển khai RESTful API.
+  - Cấu hình bảo mật: JWT Authentication, Refresh Token, Rate Limiting.
+  - Xây dựng các Controller xử lý logic: Auth, User, Profile, Avatar.
+  - Tích hợp dịch vụ bên thứ ba: Nodemailer (gửi email), Cloudinary (lưu trữ ảnh).
+  - Viết Middleware kiểm tra quyền truy cập (Auth & RBAC).
+
+### 👩💻 Thái Lâm Hồng Phúc - Frontend Developer
+
+**Trách nhiệm chính:** Xây dựng giao diện người dùng và tương tác với API.
+
+  - Thiết kế giao diện hiện đại, responsive với React.js và CSS3.
+  - Quản lý trạng thái ứng dụng (State Management) bằng Redux Toolkit.
+  - Xây dựng các luồng người dùng: Đăng nhập, Đăng ký, Quên mật khẩu, Dashboard.
+  - Tích hợp API vào giao diện, xử lý lỗi và hiển thị thông báo thân thiện.
+  - Phát triển các component UI tái sử dụng (AvatarUpload, UserTable...).
+
+### 👨💻 Phạm Thái An) - Database & DevOps Engineer
+
+**Trách nhiệm chính:** Thiết kế cơ sở dữ liệu, triển khai và đảm bảo vận hành hệ thống.
+
+  - Thiết kế Schema MongoDB: User, RefreshToken, ActivityLog.
+  - Tối ưu hóa truy vấn cơ sở dữ liệu (Indexing, Aggregation).
+  - Thiết lập môi trường triển khai (Deployment) trên Render (Backend) và Vercel (Frontend).
+  - Quản lý cấu hình biến môi trường (.env) và bảo mật server.
+  - Thực hiện kiểm thử API (Postman Testing) và viết tài liệu kỹ thuật.
+
+-----
+
+## 🛠️ Công nghệ sử dụng (Tech Stack)
+
+### Backend (Server-side)
+
+  - **Node.js & Express.js**: Nền tảng và framework chính để xây dựng server.
+  - **MongoDB & Mongoose**: Cơ sở dữ liệu NoSQL và thư viện ODM để làm việc với dữ liệu.
+  - **JWT (JSON Web Tokens)**: Cơ chế xác thực bảo mật không trạng thái (stateless).
+  - **Bcrypt**: Thư viện mã hóa mật khẩu một chiều an toàn.
+  - **Multer**: Middleware xử lý upload file (ảnh avatar).
+  - **Nodemailer**: Thư viện gửi email (dùng cho tính năng quên mật khẩu).
+  - **Express-rate-limit**: Middleware giới hạn số lượng request để chống spam.
+
+### Frontend (Client-side)
+
+  - **React.js**: Thư viện JavaScript để xây dựng giao diện người dùng tương tác.
+  - **Redux Toolkit**: Công cụ quản lý trạng thái (state) tập trung hiệu quả.
+  - **React Router**: Thư viện điều hướng trang trong ứng dụng đơn trang (SPA).
+  - **Axios**: Thư viện thực hiện các HTTP request đến server.
+  - **CSS3**: Ngôn ngữ định kiểu cho giao diện đẹp mắt.
 
 ### Database & Services
-- **MongoDB Atlas** - Cloud database
-- **Collections:** users, refreshtokens, activitylogs
-- **Gmail SMTP** - Email service
 
-## 📁 Cấu trúc dự án
+  - **MongoDB Atlas**: Dịch vụ cơ sở dữ liệu đám mây.
+  - **Gmail SMTP / Brevo**: Dịch vụ gửi email giao dịch.
+  - **Cloudinary** (Tùy chọn): Dịch vụ lưu trữ và tối ưu hình ảnh đám mây.
+  - **Render & Vercel**: Nền tảng triển khai ứng dụng (Backend & Frontend).
+
+-----
+
+## 📁 Cấu trúc Thư mục (Project Structure)
+
+
 ```
 Group7-project/
-├── backend/
-│   ├── config/
-│   │   └── cloudinary.js
-│   ├── controllers/
-│   │   ├── authController.js
-│   │   ├── userController.js
-│   │   ├── profileController.js
-│   │   ├── avatarController.js
-│   │   ├── rbacController.js
-│   │   └── activityController.js
-│   ├── middleware/
-│   │   ├── auth.js
-│   │   ├── upload.js
-│   │   ├── rateLimiter.js
-│   │   ├── security.js
-│   │   └── activityLogger.js
-│   ├── models/
-│   │   ├── User.js
-│   │   ├── RefreshToken.js
-│   │   └── ActivityLog.js
-│   ├── routes/
-│   │   ├── auth.js
-│   │   ├── user.js
-│   │   ├── profile.js
-│   │   ├── avatar.js
-│   │   ├── rbac.js
-│   │   └── activity.js
-│   ├── seeders/
-│   │   └── rbacSeeder.js
-│   ├── services/
-│   │   ├── emailService.js
-│   │   └── tokenService.js
-│   ├── uploads/
-│   ├── utils/
-│   │   └── dbOptimization.js
-│   ├── .env
-│   ├── .gitignore
-│   ├── package.json
-│   └── server.js
-├── frontend/
-│   ├── public/
-│   │   └── index.html
+├── backend/                # Mã nguồn Server (Node.js)
+│   ├── config/             # Các file cấu hình (Cloudinary, DB...)
+│   ├── controllers/        # Logic xử lý nghiệp vụ API
+│   ├── middleware/         # Các hàm trung gian (Auth, Upload, RateLimit...)
+│   ├── models/             # Định nghĩa Schema MongoDB
+│   ├── routes/             # Định nghĩa các đường dẫn API
+│   ├── services/           # Các dịch vụ tách biệt (Email, Token...)
+│   └── server.js           # File khởi chạy server chính
+├── frontend/               # Mã nguồn Client (ReactJS)
+│   ├── public/             # File tĩnh (index.html, favicon...)
 │   ├── src/
-│   │   ├── components/
-│   │   │   ├── LoginRedux.js
-│   │   │   ├── SignupRedux.js
-│   │   │   ├── DashboardRedux.js
-│   │   │   ├── AdminRedux.js
-│   │   │   ├── ProfileRedux.js
-│   │   │   ├── AvatarUpload.js
-│   │   │   ├── AvatarDisplay.js
-│   │   │   ├── UsersRedux.js
-│   │   │   ├── RoleManagement.js
-│   │   │   ├── ActivityLogs.js
-│   │   │   ├── ModeratorPanel.js
-│   │   │   ├── SettingsRedux.js
-│   │   │   ├── NavigationRedux.js
-│   │   │   ├── ProtectedRoute.js
-│   │   │   ├── ForgotPassword.js
-│   │   │   ├── ResetPassword.js
-│   │   │   ├── EmailTest.js
-│   │   │   ├── RateLimitDemo.js
-│   │   │   ├── RefreshTokenTest.js
-│   │   │   ├── TokenStatus.js
-│   │   │   ├── AuthDebug.js
-│   │   │   ├── MyActivity.js
-│   │   │   ├── PermissionDisplay.js
-│   │   │   └── RoleBasedNav.js
-│   │   ├── contexts/
-│   │   │   └── RoleContext.js
-│   │   ├── services/
-│   │   │   └── api.js
-│   │   ├── store/
-│   │   │   ├── authSlice.js
-│   │   │   └── store.js
-│   │   ├── App.js
-│   │   ├── AppRedux.js
-│   │   ├── index.js
-│   │   └── styles.css
-│   ├── .eslintrc.js
-│   └── package.json
-├── .gitignore
-├── DEPLOYMENT_GUIDE.md
-├── README_ADVANCED.md
-├── SECURITY_FIXES.md
-├── Group7_API_Collection.postman_collection.json
-└── README.md
+│   │   ├── components/     # Các thành phần giao diện tái sử dụng
+│   │   ├── contexts/       # React Context API (nếu dùng thêm)
+│   │   ├── services/       # Cấu hình Axios gọi API
+│   │   ├── store/          # Cấu hình Redux Store & Slices
+│   │   ├── App.js          # Component chính của ứng dụng
+│   │   └── index.js        # Điểm bắt đầu của React
+└── README.md               # Tài liệu hướng dẫn này
 ```
 
-## 🔗 API Endpoints
+-----
 
-### 🔐 Authentication
-| Method | Endpoint | Mô tả |
-|--------|----------|-------|
-| POST | `/api/auth/signup` | Đăng ký tài khoản mới |
-| POST | `/api/auth/login` | Đăng nhập |
-| POST | `/api/auth/logout` | Đăng xuất |
-| POST | `/api/auth/refresh` | Làm mới token |
-| GET | `/api/auth/verify` | Xác thực token |
-| POST | `/api/auth/forgot-password` | Quên mật khẩu |
-| POST | `/api/auth/reset-password` | Đặt lại mật khẩu |
+## 🚀 Hướng dẫn Cài đặt & Chạy dự án (Setup Guide)
 
-### 👥 User Management
-| Method | Endpoint | Mô tả |
-|--------|----------|-------|
-| GET | `/api/users` | Lấy danh sách user |
-| GET | `/api/users/stats` | Thống kê user |
-| POST | `/api/users` | Tạo user mới |
-| PUT | `/api/users/:id` | Cập nhật user |
-| DELETE | `/api/users/:id` | Xóa user |
+### 1\. Sao chép mã nguồn (Clone Repository)
 
-### 👤 Profile & Avatar
-| Method | Endpoint | Mô tả |
-|--------|----------|-------|
-| GET | `/api/profile` | Lấy thông tin profile |
-| PUT | `/api/profile` | Cập nhật profile |
-| POST | `/api/avatar/upload` | Upload avatar |
-| DELETE | `/api/avatar/delete` | Xóa avatar |
-
-### 🛡️ RBAC & Activity
-| Method | Endpoint | Mô tả |
-|--------|----------|-------|
-| GET | `/api/rbac/permissions` | Lấy quyền của user |
-| GET | `/api/rbac/stats` | Thống kê role |
-| PUT | `/api/rbac/users/:userId/role` | Cập nhật role user |
-| GET | `/api/activity/logs` | Xem activity logs |
-| GET | `/api/activity/stats` | Thống kê activity |
-| GET | `/api/activity/my-logs` | Xem logs cá nhân |
-
-## 🚀 Hướng dẫn chạy dự án
-
-### 1. Clone repository
 ```bash
 git clone https://github.com/Phuchiu/Group7-project.git
 cd Group7-project
 ```
 
-### 2. Chạy Backend
+### 2\. Cài đặt và Chạy Backend
+
 ```bash
 cd backend
-npm install
-npm run dev
+npm install      # Cài đặt các thư viện phụ thuộc
+npm run dev      # Chạy server ở chế độ development
 ```
-Backend sẽ chạy trên: `http://localhost:3000`
 
-### 3. Chạy Frontend
+*Server sẽ khởi chạy tại: `http://localhost:3000`*
+
+### 3\. Cài đặt và Chạy Frontend
+
+Mở một terminal mới:
+
 ```bash
 cd frontend
-npm install
-npm start
+npm install      # Cài đặt các thư viện phụ thuộc
+npm start        # Khởi chạy ứng dụng React
 ```
-Frontend sẽ chạy trên: `http://localhost:3001`
 
-### 4. Cấu hình Environment Variables
-Tạo file `.env` trong thư mục `backend/`:
+*Ứng dụng web sẽ tự động mở tại: `http://localhost:3001`*
+
+### 4\. Cấu hình Biến môi trường (.env)
+
+Tạo file `.env` trong thư mục `backend/` và điền các thông tin bảo mật của bạn:
+
 ```env
-# Database
-MONGODB_URI=mongodb+srv://admin:1234567890@cluster0.fmvyp3m.mongodb.net/groupDB
+# Kết nối Database
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/db_name
 
-# Server
+# Cấu hình Server
 PORT=3000
 
-# JWT
-JWT_SECRET=your-super-secret-jwt-key-here
-JWT_REFRESH_SECRET=your-super-secret-refresh-key-here
-JWT_EXPIRE=15m
-JWT_REFRESH_EXPIRE=7d
+# Bảo mật JWT (Quan trọng!)
+JWT_SECRET=chuoi_bi_mat_cua_ban_cho_access_token
+JWT_REFRESH_SECRET=chuoi_bi_mat_cua_ban_cho_refresh_token
+JWT_EXPIRE=15m        # Thời gian hết hạn Access Token
+JWT_REFRESH_EXPIRE=7d # Thời gian hết hạn Refresh Token
 
-# Session
-SESSION_SECRET=your-session-secret-key
+# Cấu hình gửi Email (Chọn 1 trong 2 cách)
+# Cách 1: Brevo API (Khuyên dùng cho Render)
+BREVO_API_KEY=xkeysib-xxxxxxxxxxxxxxxxxxx
+EMAIL_FROM=email_dang_ky_brevo@example.com
 
-# Email (Gmail SMTP)
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASS=your-app-password
-EMAIL_FROM=your-email@gmail.com
-
-# Frontend URL
-FRONTEND_URL=http://localhost:3001
-
-# Cloudinary (Optional)
-CLOUDINARY_CLOUD_NAME=your-cloud-name
-CLOUDINARY_API_KEY=your-api-key
-CLOUDINARY_API_SECRET=your-api-secret
+# Cách 2: Gmail SMTP (Dùng cho Localhost)
+# EMAIL_SERVICE=gmail
+# EMAIL_USER=your-gmail@gmail.com
+# EMAIL_PASS=mat_khau_ung_dung_16_ky_tu
 ```
 
-### 5. Seed Database (Optional)
-```bash
-cd backend
-node seeders/rbacSeeder.js
-```
+-----
 
-## ✨ Tính năng chính
+## 🧪 Tài khoản Kiểm thử (Test Accounts)
 
-### 🔐 Authentication & Security
-- ✅ **JWT Authentication** - Access token + Refresh token
-- ✅ **Password Hashing** - Bcrypt encryption
-- ✅ **Password Reset** - Email verification
-- ✅ **Rate Limiting** - Bảo vệ API khỏi spam
-- ✅ **Session Management** - Quản lý phiên đăng nhập
-- ✅ **Security Headers** - Advanced security middleware
-- ✅ **Input Sanitization** - Bảo vệ khỏi XSS, injection
+| Vai trò (Role) | Email | Mật khẩu | Quyền hạn chính |
+| :--- | :--- | :--- | :--- |
+| **Admin** | `admin@example.com` | `123456` | Toàn quyền hệ thống, quản lý tất cả users. |
+| **Moderator** | `moderator@example.com` | `moderator123` | Quản lý người dùng thường, xem nhật ký. |
+| **User** | `nhantaivang9999@gmail.com` | `123456` | Chỉ quản lý thông tin cá nhân (Profile). |
 
-### 👥 User Management
-- ✅ **CRUD Operations** - Tạo, đọc, cập nhật, xóa user
-- ✅ **Role-Based Access** - Admin, Moderator, User
-- ✅ **Permission System** - Phân quyền chi tiết
-- ✅ **User Statistics** - Thống kê theo role
-- ✅ **Profile Management** - Quản lý thông tin cá nhân
-- ✅ **Bulk Operations** - Xử lý nhiều user cùng lúc
+-----
 
-### 🖼️ Avatar & Media
-- ✅ **Avatar Upload** - Upload và quản lý ảnh đại diện
-- ✅ **Image Validation** - Kiểm tra định dạng và kích thước
-- ✅ **File Storage** - Lưu trữ local hoặc Cloudinary
-- ✅ **Image Processing** - Sharp optimization
-- ✅ **Multiple Formats** - JPG, PNG, GIF, WEBP support
+## 🔗 Triển khai Thực tế (Live Demo)
 
-### 📊 Dashboard & Analytics
-- ✅ **Real-time Dashboard** - Thống kê trực tiếp
-- ✅ **Activity Logging** - Theo dõi hoạt động
-- ✅ **User Analytics** - Phân tích người dùng
-- ✅ **Admin Panel** - Bảng điều khiển quản trị
-- ✅ **Charts & Graphs** - Visualization data
-- ✅ **Export Features** - Xuất báo cáo
+Dự án đã được triển khai và có thể truy cập trực tuyến tại:
 
-### 🎨 UI/UX
-- ✅ **Modern Design** - Giao diện hiện đại với gradient
-- ✅ **Responsive Layout** - Tương thích mobile
-- ✅ **Redux State Management** - Quản lý state toàn cục
-- ✅ **Loading States** - Trạng thái loading
-- ✅ **Error Handling** - Xử lý lỗi thân thiện
-- ✅ **Dark/Light Mode** - Theme switching
-- ✅ **Accessibility** - WCAG compliant
+  - **Frontend (Giao diện Web):** [https://group7-project-eight.vercel.app](https://group7-project-eight.vercel.app)
+  - **Backend (API Server):** `https://group7-project-g0ww.onrender.com`
 
-### 🛠️ Development Tools
-- ✅ **Debug Components** - AuthDebug, TokenStatus
-- ✅ **Testing Tools** - RateLimitDemo, RefreshTokenTest
-- ✅ **Email Testing** - EmailTest component
-- ✅ **Permission Display** - PermissionDisplay component
-- ✅ **Activity Monitoring** - MyActivity component
-
-## 🧪 Testing với Postman
-
-### 🔐 Authentication Flow
-```bash
-# 1. Đăng ký
-POST http://localhost:3000/api/auth/signup
-Content-Type: application/json
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "Password123!"
-}
-
-# 2. Đăng nhập
-POST http://localhost:3000/api/auth/login
-Content-Type: application/json
-{
-  "email": "john@example.com",
-  "password": "Password123!"
-}
-
-# 3. Refresh Token
-POST http://localhost:3000/api/auth/refresh
-Content-Type: application/json
-{
-  "refreshToken": "your-refresh-token"
-}
-```
-
-### 👥 User Management
-```bash
-# Lấy danh sách users (cần token)
-GET http://localhost:3000/api/users
-Authorization: Bearer your-access-token
-
-# Thống kê users
-GET http://localhost:3000/api/users/stats
-Authorization: Bearer your-access-token
-
-# Tạo user mới (Admin only)
-POST http://localhost:3000/api/users
-Authorization: Bearer admin-token
-Content-Type: application/json
-{
-  "name": "New User",
-  "email": "newuser@example.com",
-  "password": "Password123!",
-  "role": "user"
-}
-```
-
-### 🖼️ Avatar Upload
-```bash
-# Upload avatar
-POST http://localhost:3000/api/avatar/upload
-Authorization: Bearer your-access-token
-Content-Type: multipart/form-data
-# Body: form-data với key "avatar" và file ảnh
-
-# Xóa avatar
-DELETE http://localhost:3000/api/avatar/delete
-Authorization: Bearer your-access-token
-```
-
-## 🔧 Troubleshooting
-
-### 🔐 Authentication Issues
-```bash
-# Token hết hạn
-- Sử dụng refresh token để lấy token mới
-- Kiểm tra JWT_EXPIRE trong .env
-
-# Unauthorized errors
-- Đảm bảo gửi token trong header: Authorization: Bearer <token>
-- Kiểm tra JWT_SECRET trong .env
-```
-
-### 📧 Email Issues
-```bash
-# Gmail SMTP không hoạt động
-- Bật 2-factor authentication
-- Tạo App Password thay vì password thường
-- Kiểm tra EMAIL_* variables trong .env
-```
-
-### 🖼️ Avatar Upload Issues
-```bash
-# File quá lớn
-- Giới hạn: 5MB
-- Định dạng: JPG, PNG, GIF, WEBP
-
-# Ảnh không hiển thị
-- Kiểm tra thư mục uploads/ tồn tại
-- Kiểm tra static file middleware
-```
-
-### 🗄️ Database Issues
-```bash
-# MongoDB Connection
-- Kiểm tra MONGODB_URI trong .env
-- Whitelist IP trong MongoDB Atlas
-- Kiểm tra network connectivity
-
-# Schema validation errors
-- Đảm bảo dữ liệu đúng format
-- Kiểm tra required fields
-```
-
-### 🌐 CORS Issues
-```bash
-# Frontend không gọi được API
-- Kiểm tra CORS middleware trong server.js
-- Đảm bảo frontend URL đúng (localhost:3001)
-- Kiểm tra FRONTEND_URL trong .env
-```
-
-## 👥 Đóng góp từng thành viên
-
-### 👨💻 Backend Developer - Advanced Features
-**Vai trò:** Phát triển server-side và tính năng nâng cao
-
-**Nhiệm vụ hoàn thành:**
-- ✅ **Authentication System** - JWT + Refresh Token
-- ✅ **Authorization & RBAC** - Role-based access control
-- ✅ **Password Security** - Bcrypt hashing + Reset via email
-- ✅ **File Upload** - Avatar upload với validation
-- ✅ **Activity Logging** - Theo dõi hoạt động user
-- ✅ **Rate Limiting** - Bảo vệ API khỏi spam
-- ✅ **Email Service** - Nodemailer integration
-- ✅ **Error Handling** - Comprehensive error management
-- ✅ **Security Middleware** - Advanced security features
-- ✅ **Database Optimization** - Performance tuning
-
-**Files chính:**
-- `controllers/` - Auth, User, Profile, Avatar, RBAC, Activity
-- `middleware/` - Auth, Upload, Rate Limit, Activity Logger, Security
-- `services/` - Email, Token management
-- `models/` - User, RefreshToken, ActivityLog
-- `utils/` - Database optimization
-
-### 👩💻 Frontend Developer - Modern UI/UX
-**Vai trò:** Phát triển giao diện hiện đại với Redux
-
-**Nhiệm vụ hoàn thành:**
-- ✅ **Redux Integration** - State management toàn cục
-- ✅ **Authentication Flow** - Login, Signup, Password Reset
-- ✅ **Dashboard** - Real-time statistics và analytics
-- ✅ **Admin Panel** - User management interface
-- ✅ **Profile Management** - Avatar upload, profile editing
-- ✅ **Role-based Navigation** - Dynamic menu theo role
-- ✅ **Modern Design** - Responsive, gradient, animations
-- ✅ **Error Handling** - User-friendly error messages
-- ✅ **Debug Tools** - Development debugging components
-- ✅ **Testing Components** - Rate limit, token testing
-
-**Components chính:**
-- `LoginRedux`, `SignupRedux`, `DashboardRedux`, `AdminRedux`
-- `AvatarUpload`, `AvatarDisplay`, `ProfileRedux`, `SettingsRedux`
-- `RoleManagement`, `ActivityLogs`, `UsersRedux`, `ModeratorPanel`
-- `AuthDebug`, `TokenStatus`, `RateLimitDemo`, `RefreshTokenTest`
-
-### 👨💻 Database & DevOps Engineer
-**Vai trò:** Database design và deployment
-
-**Nhiệm vụ hoàn thành:**
-- ✅ **Advanced Schema Design** - User, RefreshToken, ActivityLog
-- ✅ **Database Optimization** - Indexing, aggregation
-- ✅ **Security Implementation** - Data validation, sanitization
-- ✅ **Backup Strategy** - MongoDB Atlas backup
-- ✅ **Environment Configuration** - Production-ready setup
-- ✅ **API Documentation** - Postman collections
-- ✅ **Testing Strategy** - Unit tests, integration tests
-- ✅ **Deployment Guide** - Production deployment
-- ✅ **Security Audit** - Security fixes documentation
-- ✅ **Performance Monitoring** - Database optimization
-
-**Deliverables:**
-- Database schema documentation
-- API testing collections (Postman)
-- Environment setup guides
-- Performance optimization reports
-- Security fixes documentation
-- Deployment guides
-
-## 🎯 Demo & Testing Checklist
-
-### ✅ Authentication Flow
-- [ ] Đăng ký tài khoản mới
-- [ ] Đăng nhập với email/password
-- [ ] Refresh token tự động
-- [ ] Đăng xuất và clear tokens
-- [ ] Quên mật khẩu qua email
-- [ ] Đặt lại mật khẩu
-- [ ] Token expiration handling
-
-### ✅ User Management
-- [ ] Xem danh sách users (phân trang)
-- [ ] Tạo user mới (Admin only)
-- [ ] Cập nhật thông tin user
-- [ ] Xóa user (Admin only)
-- [ ] Thống kê users theo role
-- [ ] Bulk user operations
-
-### ✅ Profile & Avatar
-- [ ] Xem profile cá nhân
-- [ ] Cập nhật thông tin profile
-- [ ] Upload avatar (JPG, PNG, GIF, WEBP)
-- [ ] Xóa avatar
-- [ ] Avatar hiển thị real-time
-- [ ] Image optimization
-
-### ✅ RBAC & Permissions
-- [ ] Admin: Full access
-- [ ] Moderator: Limited management
-- [ ] User: Profile only
-- [ ] Role-based navigation
-- [ ] Permission validation
-- [ ] Role switching
-
-### ✅ Activity & Logs
-- [ ] Login/logout tracking
-- [ ] User actions logging
-- [ ] Admin view all logs
-- [ ] User view personal logs
-- [ ] Activity statistics
-- [ ] Log filtering & pagination
-
-### ✅ Security Features
-- [ ] Rate limiting (login, API)
-- [ ] Password strength validation
-- [ ] JWT token expiration
-- [ ] CORS protection
-- [ ] Input sanitization
-- [ ] Security headers
-
-### ✅ Development Tools
-- [ ] Auth debug component
-- [ ] Token status monitoring
-- [ ] Rate limit testing
-- [ ] Email testing
-- [ ] Permission display
-- [ ] Activity monitoring
-
-## 🚀 Production Deployment
-
-### Backend (Render)
-**Live URL:** https://group7-project-g0ww.onrender.com
-
-```bash
-# Environment variables cần thiết:
-MONGODB_URI=mongodb+srv://admin:1234567890@cluster0.fmvyp3m.mongodb.net/groupDB
-JWT_SECRET=your-super-secret-jwt-key-here-2024
-JWT_REFRESH_SECRET=your-super-secret-refresh-jwt-key-2024
-EMAIL_USER=tai31072004ok@gmail.com
-EMAIL_PASS=ddvb atff swwf homk
-SESSION_SECRET=your-session-secret-key
-PORT=3000
-NODE_ENV=production
-```
-
-### Frontend (Vercel/Netlify)
-```bash
-# Environment variables:
-REACT_APP_API_URL=https://group7-project-g0ww.onrender.com
-
-# Build production
-npm run build
-
-# Deploy
-vercel --prod
-# hoặc
-netlify deploy --prod
-```
-
-### 🔧 Cấu hình Environment Variables
-
-#### Frontend (.env)
-```env
-# Production API URL
-REACT_APP_API_URL=https://group7-project-g0ww.onrender.com
-```
-
-#### Frontend (.env.local) - Development only
-```env
-# Local development
-REACT_APP_API_URL=http://localhost:3000
-```
-
-## 📊 Performance Metrics
-
-- **API Response Time**: < 200ms
-- **Database Queries**: Optimized with indexing
-- **File Upload**: Max 5MB, multiple formats
-- **Concurrent Users**: Tested up to 100
-- **Security Score**: A+ (JWT, HTTPS, CORS)
-- **Code Quality**: ESLint compliant
-- **Test Coverage**: 85%+
-
-## 🏆 Project Achievements
-
-- ✅ **Full-stack Application** - Complete MERN stack
-- ✅ **Advanced Authentication** - JWT + Refresh tokens
-- ✅ **Role-based Authorization** - 3-tier permission system
-- ✅ **File Upload System** - Avatar management
-- ✅ **Email Integration** - Password reset functionality
-- ✅ **Activity Monitoring** - Comprehensive logging
-- ✅ **Modern UI/UX** - Redux + Responsive design
-- ✅ **Security Best Practices** - Rate limiting, validation
-- ✅ **API Documentation** - Postman collections
-- ✅ **Production Ready** - Environment configuration
-- ✅ **Debug Tools** - Development utilities
-- ✅ **Testing Suite** - Comprehensive testing tools
-
-## 🔒 Security Features
-
-- **JWT Authentication** - Secure token-based auth
-- **Password Hashing** - Bcrypt encryption
-- **Rate Limiting** - API protection
-- **CORS Configuration** - Cross-origin security
-- **Input Sanitization** - XSS protection
-- **Security Headers** - HTTP security headers
-- **Session Management** - Secure session handling
-- **File Upload Security** - File type validation
-- **SQL Injection Protection** - Mongoose ODM
-- **CSRF Protection** - Cross-site request forgery
-
-## 📄 Additional Documentation
-
-- **[README_ADVANCED.md](./README_ADVANCED.md)** - Detailed technical documentation
-- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Production deployment guide
-- **[SECURITY_FIXES.md](./SECURITY_FIXES.md)** - Security improvements documentation
-- **[Group7_API_Collection.postman_collection.json](./Group7_API_Collection.postman_collection.json)** - Postman API collection
-
-## 🧪 Test Accounts
-
-### Admin Account
-- **Email:** `admin@example.com`
-- **Password:** `admin123`
-- **Permissions:** Full system access
-
-### Moderator Account
-- **Email:** `moderator@example.com`
-- **Password:** `moderator123`
-- **Permissions:** User management, activity logs
-
-### Regular User Account
-- **Email:** `user@example.com`
-- **Password:** `user123`
-- **Permissions:** Profile management only
-
-## 📄 License
-MIT License - Educational Project
-
-## 📞 Liên hệ
-- **Repository**: https://github.com/Phuchiu/Group7-project
-- **Issues**: https://github.com/Phuchiu/Group7-project/issues
-- **Demo Video**: [Link to demo video]
-- **Live Demo**: [Link to deployed app]
-
----
-**🎓 Nhóm 7 - Advanced Web Development với Node.js + React Redux + MongoDB**
-
-*Dự án hoàn chỉnh với đầy đủ tính năng nâng cao cho quản lý người dùng hiện đại*
+*(Lưu ý: Server Backend miễn phí trên Render có thể tự "ngủ đông" sau 15 phút không hoạt động. Lần truy cập đầu tiên có thể mất khoảng 1-2 phút để server khởi động lại. Mong bạn thông cảm đợi giây lát\!)*
