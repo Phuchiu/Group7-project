@@ -1,6 +1,4 @@
-Dưới đây là bản cập nhật **README.md** với nhiều nội dung tiếng Việt hơn và bổ sung phần phân công công việc cho 3 sinh viên (SV1 - Backend, SV2 - Frontend, SV3 - Database/DevOps), giữ nguyên các phần kỹ thuật bằng tiếng Anh để đảm bảo tính chuyên nghiệp.
 
------
 
 # 🚀 Group7-project - Hệ Thống Quản Lý Người Dùng Nâng Cao (Advanced User Management System)
 
