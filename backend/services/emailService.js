@@ -2,8 +2,8 @@ const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-  port: process.env.EMAIL_PORT || 587,
-  secure: process.env.EMAIL_PORT == 465, // Auto enable SSL for port 465
+  port: process.env.EMAIL_PORT || 465,
+  secure: true, // Always use SSL for port 465
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
@@ -15,6 +15,7 @@ const sendResetPasswordEmail = async (email, resetToken) => {
     console.log('Bắt đầu gửi email cho:', email);
     console.log('EMAIL_USER:', process.env.EMAIL_USER);
     console.log('EMAIL_HOST:', process.env.EMAIL_HOST);
+    console.log('EMAIL_PORT:', process.env.EMAIL_PORT);
     
     const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3001'}/reset-password/${resetToken}`;
     
