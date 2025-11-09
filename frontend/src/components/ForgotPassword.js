@@ -1,73 +1,69 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 
 const ForgotPassword = ({ onBack }) => {
   const navigate = useNavigate();
+  const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const [emailSent, setEmailSent] = useState(false);
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSendEmail = async (e) => {
     e.preventDefault();
+    if (!email.trim()) { setError('Vui lòng nhập email'); return; }
     
-    if (!email.trim()) {
-      setError('Vui lòng nhập email');
-      return;
-    }
-    
-    if (!validateEmail(email)) {
-      setError('Email không hợp lệ');
-      return;
-    }
-
-    setLoading(true);
-    setError('');
-    setMessage('');
-
+    setLoading(true); setError(''); setMessage('');
     try {
-      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
-      const response = await axios.post(`${API_URL}/api/auth/forgot-password`, {
-        email: email.trim().toLowerCase()
-      });
-      setMessage(response.data.message);
-      setEmailSent(true);
-      setEmail('');
-    } catch (error) {
-      setError(error.response?.data?.message || 'Có lỗi xảy ra khi gửi email');
+      await api.post('/api/auth/forgot-password', { email });
+      setMessage('✅ Mã xác nhận 6 số đã được gửi đến email của bạn!');
+      setStep(2);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Không tìm thấy email này');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleResendEmail = () => {
-    setEmailSent(false);
-    setMessage('');
-    setError('');
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    if (!code || !password) { setError('Vui lòng nhập đủ mã và mật khẩu mới'); return; }
+
+    setLoading(true); setError(''); setMessage('');
+    try {
+      await api.post('/api/auth/reset-password', { email, code, password });
+      setMessage('🎉 Đổi mật khẩu thành công! Đang chuyển về trang đăng nhập...');
+      setTimeout(() => {
+         if (onBack) {
+             onBack();
+         } else {
+             navigate('/login');
+         }
+      }, 2000);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Mã xác nhận sai hoặc đã hết hạn');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="auth-container">
       <div className="auth-form">
-        <h2>Quên mật khẩu</h2>
+        <h2>{step === 1 ? 'Quên mật khẩu' : 'Đặt lại mật khẩu'}</h2>
         
         {error && <div className="error">{error}</div>}
         {message && <div className="success">{message}</div>}
 
-        {!emailSent ? (
+        {step === 1 ? (
           <>
             <p className="forgot-password-description">
-              Nhập địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn liên kết để đặt lại mật khẩu.
+              Nhập email của bạn để nhận mã xác nhận 6 số.
             </p>
-            
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSendEmail}>
               <div className="form-group">
                 <input
                   type="email"
@@ -76,53 +72,53 @@ const ForgotPassword = ({ onBack }) => {
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
                   autoFocus
+                  required
                 />
               </div>
-              
               <button type="submit" disabled={loading || !email.trim()}>
-                {loading ? (
-                  <>
-                    <span className="loading-spinner"></span>
-                    Đang gửi...
-                  </>
-                ) : (
-                  'Gửi email đặt lại mật khẩu'
-                )}
+                {loading ? 'Đang gửi...' : 'Gửi mã xác nhận'}
               </button>
             </form>
           </>
         ) : (
-          <div className="email-sent-confirmation">
-            <div className="success-icon">✉️</div>
-            <h3>Email đã được gửi!</h3>
-            <p>
-              Chúng tôi đã gửi liên kết đặt lại mật khẩu đến email của bạn. 
-              Vui lòng kiểm tra hòm thư và làm theo hướng dẫn.
+          <>
+             <p className="forgot-password-description">
+              Vui lòng kiểm tra email <strong>{email}</strong> và nhập mã 6 số vào bên dưới.
+              <br/>
+              <small>(<a href="#" onClick={(e) => { e.preventDefault(); setStep(1); }}>Nhập lại email khác</a>)</small>
             </p>
-            <div className="email-actions">
-              <button type="button" className="resend-btn" onClick={handleResendEmail}>
-                Gửi lại email
+            <form onSubmit={handleResetPassword}>
+              <div className="form-group">
+                <input
+                  type="text"
+                  placeholder="Mã xác nhận (6 số)"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  disabled={loading}
+                  required
+                  maxLength="6"
+                  style={{ textAlign: 'center', letterSpacing: '5px', fontSize: '18px' }}
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="password"
+                  placeholder="Mật khẩu mới"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
+                  required
+                  minLength="6"
+                />
+              </div>
+              <button type="submit" disabled={loading || !code || !password}>
+                {loading ? 'Đang xử lý...' : 'Đổi mật khẩu'}
               </button>
-              
-              <button
-                type="button"
-                onClick={() => navigate('/reset-password', { state: { email: email } })}
-                className="enter-code-btn"
-                style={{ 
-                  marginTop: '10px', 
-                  padding: '10px 20px', 
-                  background: '#28a745', 
-                  color: 'white', 
-                  border: 'none', 
-                  borderRadius: '5px', 
-                  cursor: 'pointer', 
-                  width: '100%' 
-                }}
-              >
-                👉 Nhập mã xác nhận ngay
-              </button>
-            </div>
-          </div>
+            </form>
+             <button type="button" className="link-btn" onClick={handleSendEmail} disabled={loading} style={{marginTop: '10px', fontSize: '14px'}}>
+                Gửi lại mã
+             </button>
+          </>
         )}
 
         <div className="auth-footer">
