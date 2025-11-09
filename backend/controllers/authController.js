@@ -206,39 +206,48 @@ const forgotPassword = async (req, res) => {
 const resetPassword = async (req, res) => {
   try {
     const { email, code, password } = req.body;
+    console.log('🔥 [DEBUG START] --------------------------------');
+    console.log('📨 1. Frontend gửi:', { email, codeInput: code, pass: password });
 
-    console.log('👉 [DEBUG] Frontend gửi lên:', { email, code });
-
-    // 1. Tìm user bằng email trước (bỏ qua check token vội)
     const user = await User.findOne({ email });
-
     if (!user) {
-        console.log('❌ [DEBUG] Không tìm thấy user có email này');
+        console.log('❌ 2. Không tìm thấy user có email này!');
         return res.status(400).json({ message: 'Email không tồn tại' });
     }
 
-    // 2. In ra thông tin đang lưu trong DB để so sánh
-    console.log('👉 [DEBUG] Dữ liệu trong DB:', {
-        tokenInDB: user.resetPasswordToken,
-        expireInDB: user.resetPasswordExpires,
-        currentTime: Date.now(),
-        isMatch: user.resetPasswordToken === code,
-        isStillValid: user.resetPasswordExpires > Date.now()
+    console.log('💾 3. Dữ liệu trong DB:', {
+        id: user._id,
+        email: user.email,
+        dbToken: user.resetPasswordToken,
+        dbExpire: new Date(user.resetPasswordExpires).toLocaleString('vi-VN'),
+        now: new Date().toLocaleString('vi-VN')
     });
 
-    // 3. Kiểm tra thủ công
-    if (user.resetPasswordToken !== code) {
-         return res.status(400).json({ message: 'Mã xác nhận không khớp!' });
+    // So sánh chi tiết từng ký tự (để phát hiện dấu cách thừa)
+    const isTokenMatch = String(user.resetPasswordToken).trim() === String(code).trim();
+    const isTimeValid = new Date(user.resetPasswordExpires) > new Date();
+
+    console.log('🕵️ 4. Kết quả so sánh:', {
+        isTokenMatch_Raw: user.resetPasswordToken === code,
+        isTokenMatch_Trimmed: isTokenMatch,
+        isTimeValid: isTimeValid
+    });
+
+    if (!isTokenMatch) {
+        console.log('❌ -> LỖI: Mã không khớp!');
+        return res.status(400).json({ message: 'Mã xác nhận sai!' });
     }
-    if (user.resetPasswordExpires <= Date.now()) {
-         return res.status(400).json({ message: 'Mã xác nhận đã hết hạn!' });
+    if (!isTimeValid) {
+        console.log('❌ -> LỖI: Mã đã hết hạn!');
+        return res.status(400).json({ message: 'Mã đã hết hạn!' });
     }
 
-    // 4. Nếu mọi thứ OK thì lưu mật khẩu mới
+    console.log('✅ -> MỌI THỨ OK! Tiến hành đổi mật khẩu...');
     user.password = password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     await user.save();
+    console.log('🎉 -> ĐỔI MẬT KHẨU THÀNH CÔNG!');
 
     res.json({ message: 'Đặt lại mật khẩu thành công!' });
   } catch (error) {
