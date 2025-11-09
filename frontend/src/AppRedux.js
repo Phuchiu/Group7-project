@@ -6,7 +6,7 @@ import { verifyToken } from './store/authSlice';
 import LoginRedux from './components/LoginRedux';
 import SignupRedux from './components/SignupRedux';
 import ForgotPassword from './components/ForgotPassword';
-import ResetPassword from './components/ResetPassword';
+import ResetPasswordOTP from './components/ResetPasswordOTP';
 import ProfileRedux from './components/ProfileRedux';
 import AdminRedux from './components/AdminRedux';
 import DashboardRedux from './components/DashboardRedux';
@@ -65,10 +65,10 @@ const AppContent = () => {
             />
             
             <Route 
-              path="/reset-password/:token" 
+              path="/reset-password" 
               element={
                 isAuthenticated ? <Navigate to="/dashboard" /> : 
-                <ResetPassword />
+                <ResetPasswordOTP />
               } 
             />
             

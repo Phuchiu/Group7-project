@@ -181,21 +181,22 @@ const forgotPassword = async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy người dùng với email này' });
     }
 
-    // Generate reset token
-    const resetToken = crypto.randomBytes(32).toString('hex');
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    // Generate 6-digit reset code
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // Hash the code for security
+    user.resetPasswordToken = crypto.createHash('sha256').update(resetCode).digest('hex');
+    user.resetPasswordExpires = Date.now() + 15 * 60 * 1000; // 15 minutes
     await user.save();
 
-    // Send email
-    const emailSent = await sendResetPasswordEmail(email, resetToken);
+    // Send email with OTP code
+    const emailSent = await sendResetPasswordEmail(email, resetCode);
     
     if (!emailSent) {
-      // Nếu gửi thất bại, phải trả về lỗi 500 ngay!
       return res.status(500).json({ message: 'Lỗi server: Không thể gửi email' });
     }
     
-    res.json({ message: 'Email đặt lại mật khẩu đã được gửi' });
+    res.json({ message: 'Mã xác nhận đã được gửi đến email' });
   } catch (error) {
     console.error('LỖI GỬI MAIL CHI TIẾT:', error);
     res.status(500).json({ message: 'Server Error' });
@@ -204,16 +205,23 @@ const forgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-    const { token } = req.params;
-    const { password } = req.body;
+    const { email, code, password } = req.body;
+    
+    if (!email || !code || !password) {
+      return res.status(400).json({ message: 'Vui lòng nhập đủ Email, Mã xác nhận và Mật khẩu mới' });
+    }
+    
+    // Hash the provided code to compare with stored hash
+    const resetPasswordToken = crypto.createHash('sha256').update(code.toString()).digest('hex');
     
     const user = await User.findOne({
-      resetPasswordToken: token,
+      email: email,
+      resetPasswordToken,
       resetPasswordExpires: { $gt: Date.now() }
     });
     
     if (!user) {
-      return res.status(400).json({ message: 'Token không hợp lệ hoặc đã hết hạn' });
+      return res.status(400).json({ message: 'Mã xác nhận không đúng hoặc đã hết hạn' });
     }
     
     user.password = password;
@@ -221,7 +229,7 @@ const resetPassword = async (req, res) => {
     user.resetPasswordExpires = undefined;
     await user.save();
     
-    res.json({ message: 'Mật khẩu đã được đặt lại thành công' });
+    res.json({ message: 'Đặt lại mật khẩu thành công! Vui lòng đăng nhập.' });
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error: error.message });
   }

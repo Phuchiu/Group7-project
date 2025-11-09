@@ -1,27 +1,26 @@
 const axios = require('axios');
 
-const sendResetPasswordEmail = async (email, resetToken) => {
-  const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-
+const sendResetPasswordEmail = async (email, resetCode) => {
   // Cấu hình data gửi đi theo chuẩn của Brevo API
   const data = {
     sender: { name: "Group 7 Support", email: process.env.EMAIL_FROM },
     to: [{ email: email }],
-    subject: "Đặt lại mật khẩu - Group 7",
+    subject: "Mã xác nhận đặt lại mật khẩu",
     htmlContent: `
       <html><body>
         <h2>Yêu cầu đặt lại mật khẩu</h2>
-        <p>Bấm vào link dưới đây để đặt lại mật khẩu của bạn:</p>
-        <a href="${resetUrl}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Đặt lại mật khẩu ngay</a>
-        <p>Link này sẽ hết hạn sau 15 phút.</p>
+        <p>Mã xác nhận của bạn là:</p>
+        <h1 style="color: #007bff; letter-spacing: 5px;">${resetCode}</h1>
+        <p>Mã này sẽ hết hạn sau 15 phút.</p>
+        <p>Vui lòng không chia sẻ mã này cho ai khác.</p>
       </body></html>
     `
   };
 
   try {
+    console.log('DEBUG: Sending reset code:', resetCode);
     console.log('DEBUG: BREVO_API_KEY:', process.env.BREVO_API_KEY ? 'SET' : 'NOT SET');
     console.log('DEBUG: EMAIL_FROM:', process.env.EMAIL_FROM);
-    console.log('DEBUG: FRONTEND_URL:', process.env.FRONTEND_URL);
     
     // Gọi trực tiếp đến API của Brevo (cổng 443 - không bị chặn)
     const response = await axios.post('https://api.brevo.com/v3/smtp/email', data, {
