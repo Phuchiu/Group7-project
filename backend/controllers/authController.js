@@ -188,7 +188,12 @@ const forgotPassword = async (req, res) => {
     await user.save();
 
     // Send email
-    await sendResetPasswordEmail(email, resetToken);
+    const emailSent = await sendResetPasswordEmail(email, resetToken);
+    
+    if (!emailSent) {
+      // Nếu gửi thất bại, phải trả về lỗi 500 ngay!
+      return res.status(500).json({ message: 'Lỗi server: Không thể gửi email' });
+    }
     
     res.json({ message: 'Email đặt lại mật khẩu đã được gửi' });
   } catch (error) {

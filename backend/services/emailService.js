@@ -19,6 +19,10 @@ const sendResetPasswordEmail = async (email, resetToken) => {
   };
 
   try {
+    console.log('DEBUG: BREVO_API_KEY:', process.env.BREVO_API_KEY ? 'SET' : 'NOT SET');
+    console.log('DEBUG: EMAIL_FROM:', process.env.EMAIL_FROM);
+    console.log('DEBUG: FRONTEND_URL:', process.env.FRONTEND_URL);
+    
     // Gọi trực tiếp đến API của Brevo (cổng 443 - không bị chặn)
     const response = await axios.post('https://api.brevo.com/v3/smtp/email', data, {
       headers: {
@@ -32,6 +36,7 @@ const sendResetPasswordEmail = async (email, resetToken) => {
   } catch (error) {
     // In lỗi chi tiết nếu có
     console.error("❌ API Email Error:", error.response ? error.response.data : error.message);
+    console.error("❌ Full error:", error);
     return false;
   }
 };
