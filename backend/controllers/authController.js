@@ -184,8 +184,8 @@ const forgotPassword = async (req, res) => {
     // Generate 6-digit reset code
     const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
     
-    // Hash the code for security
-    user.resetPasswordToken = crypto.createHash('sha256').update(resetCode).digest('hex');
+    // Store code directly (no hashing for simplicity)
+    user.resetPasswordToken = resetCode;
     user.resetPasswordExpires = Date.now() + 15 * 60 * 1000; // 15 minutes
     await user.save();
 
@@ -211,12 +211,10 @@ const resetPassword = async (req, res) => {
       return res.status(400).json({ message: 'Vui lòng nhập đủ Email, Mã xác nhận và Mật khẩu mới' });
     }
     
-    // Hash the provided code to compare with stored hash
-    const resetPasswordToken = crypto.createHash('sha256').update(code.toString()).digest('hex');
-    
+    // Compare code directly (no hashing)
     const user = await User.findOne({
       email: email,
-      resetPasswordToken,
+      resetPasswordToken: code,
       resetPasswordExpires: { $gt: Date.now() }
     });
     
