@@ -6,6 +6,7 @@ import { verifyToken } from './store/authSlice';
 import LoginRedux from './components/LoginRedux';
 import SignupRedux from './components/SignupRedux';
 import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 import ProfileRedux from './components/ProfileRedux';
 import AdminRedux from './components/AdminRedux';
 import DashboardRedux from './components/DashboardRedux';
@@ -60,6 +61,14 @@ const AppContent = () => {
               element={
                 isAuthenticated ? <Navigate to="/dashboard" /> : 
                 <ForgotPassword onBack={() => window.history.back()} />
+              } 
+            />
+            
+            <Route 
+              path="/reset-password/:token" 
+              element={
+                isAuthenticated ? <Navigate to="/dashboard" /> : 
+                <ResetPassword />
               } 
             />
             
