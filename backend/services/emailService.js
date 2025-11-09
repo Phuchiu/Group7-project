@@ -1,48 +1,38 @@
-const nodemailer = require('nodemailer');
-
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: process.env.EMAIL_PORT,
-  secure: false, // Port 587 của Brevo dùng secure: false
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
+const axios = require('axios');
 
 const sendResetPasswordEmail = async (email, resetToken) => {
-  try {
-    console.log('Bắt đầu gửi email cho:', email);
-    console.log('EMAIL_USER:', process.env.EMAIL_USER);
-    console.log('EMAIL_HOST:', process.env.EMAIL_HOST);
-    console.log('EMAIL_PORT:', process.env.EMAIL_PORT);
-    
-    const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3001'}/reset-password/${resetToken}`;
-    
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Đặt lại mật khẩu - Group 7 User Management',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #333;">Đặt lại mật khẩu</h2>
-          <p>Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản của mình.</p>
-          <p>Nhấp vào liên kết bên dưới để đặt lại mật khẩu:</p>
-          <a href="${resetUrl}" style="display: inline-block; padding: 10px 20px; background-color: #667eea; color: white; text-decoration: none; border-radius: 5px;">Đặt lại mật khẩu</a>
-          <p style="margin-top: 20px;">Liên kết này sẽ hết hạn sau 1 giờ.</p>
-          <p>Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.</p>
-          <hr style="margin: 20px 0;">
-          <p style="color: #666; font-size: 12px;">Group 7 - User Management System</p>
-        </div>
-      `
-    };
+  const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-    const result = await transporter.sendMail(mailOptions);
-    console.log('Gửi email thành công:', result.messageId);
-    return result;
+  // Cấu hình data gửi đi theo chuẩn của Brevo API
+  const data = {
+    sender: { name: "Group 7 Support", email: process.env.EMAIL_FROM },
+    to: [{ email: email }],
+    subject: "Đặt lại mật khẩu - Group 7",
+    htmlContent: `
+      <html><body>
+        <h2>Yêu cầu đặt lại mật khẩu</h2>
+        <p>Bấm vào link dưới đây để đặt lại mật khẩu của bạn:</p>
+        <a href="${resetUrl}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Đặt lại mật khẩu ngay</a>
+        <p>Link này sẽ hết hạn sau 15 phút.</p>
+      </body></html>
+    `
+  };
+
+  try {
+    // Gọi trực tiếp đến API của Brevo (cổng 443 - không bị chặn)
+    const response = await axios.post('https://api.brevo.com/v3/smtp/email', data, {
+      headers: {
+        'api-key': process.env.BREVO_API_KEY,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
+    console.log("✅ Email sent via API successfully!", response.data);
+    return true;
   } catch (error) {
-    console.error('LỖI GỬI EMAIL CHI TIẾT:', error);
-    throw error;
+    // In lỗi chi tiết nếu có
+    console.error("❌ API Email Error:", error.response ? error.response.data : error.message);
+    return false;
   }
 };
 
