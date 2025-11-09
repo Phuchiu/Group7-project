@@ -12,6 +12,6 @@ router.get('/verify', auth, verifyToken); // Route mới cho Redux
 router.post('/logout', auth, logout);
 router.post('/revoke-all', auth, revokeAllTokens);
 router.post('/forgot-password', forgotPassword);
-router.post('/reset-password/:token', resetPassword);
+router.post('/reset-password', resetPassword);
 
 module.exports = router;
